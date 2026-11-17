@@ -4317,41 +4317,6 @@ export type Database = {
           },
         ]
       }
-      wall_defense_state: {
-        Row: {
-          best: number
-          created_at: string
-          plays: number
-          runs: number
-          runs_at: string
-          tg_id: number
-        }
-        Insert: {
-          best?: number
-          created_at?: string
-          plays?: number
-          runs?: number
-          runs_at?: string
-          tg_id: number
-        }
-        Update: {
-          best?: number
-          created_at?: string
-          plays?: number
-          runs?: number
-          runs_at?: string
-          tg_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "wall_defense_state_tg_id_fkey"
-            columns: ["tg_id"]
-            isOneToOne: true
-            referencedRelation: "wall_users"
-            referencedColumns: ["tg_id"]
-          },
-        ]
-      }
       wall_hero_levels: {
         Row: {
           hero: number
@@ -4585,6 +4550,103 @@ export type Database = {
           victim?: number
         }
         Relationships: []
+      }
+      wall_story_attempts: {
+        Row: {
+          chapter: number
+          day: string
+          solved: boolean
+          solved_at: string | null
+          solved_rank: number | null
+          tg_id: number
+          tries: number
+        }
+        Insert: {
+          chapter: number
+          day: string
+          solved?: boolean
+          solved_at?: string | null
+          solved_rank?: number | null
+          tg_id: number
+          tries?: number
+        }
+        Update: {
+          chapter?: number
+          day?: string
+          solved?: boolean
+          solved_at?: string | null
+          solved_rank?: number | null
+          tg_id?: number
+          tries?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_story_attempts_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_story_chapters: {
+        Row: {
+          answer_norm: string
+          hint: string
+          id: number
+          image_key: string
+          reward: number
+          riddle: string
+          story: string
+          title: string
+        }
+        Insert: {
+          answer_norm: string
+          hint: string
+          id: number
+          image_key: string
+          reward?: number
+          riddle: string
+          story: string
+          title: string
+        }
+        Update: {
+          answer_norm?: string
+          hint?: string
+          id?: number
+          image_key?: string
+          reward?: number
+          riddle?: string
+          story?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      wall_story_state: {
+        Row: {
+          created_at: string
+          extra_tries: number
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          extra_tries?: number
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          extra_tries?: number
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_story_state_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
       }
       wall_task_progress: {
         Row: {
@@ -5118,27 +5180,6 @@ export type Database = {
         Returns: number
       }
       wall_daily_checkin: { Args: { _tg: number }; Returns: Json }
-      wall_defense_load: {
-        Args: { _tg: number }
-        Returns: {
-          best: number
-          created_at: string
-          plays: number
-          runs: number
-          runs_at: string
-          tg_id: number
-        }
-        SetofOptions: {
-          from: "*"
-          to: "wall_defense_state"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
-      wall_defense_play: {
-        Args: { _score: number; _tg: number }
-        Returns: Json
-      }
       wall_ensure_heroes: { Args: { _tg: number }; Returns: undefined }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
@@ -5185,6 +5226,12 @@ export type Database = {
         Args: { _task: string; _tg: number }
         Returns: undefined
       }
+      wall_story_answer: {
+        Args: { _guess: string; _tg: number }
+        Returns: Json
+      }
+      wall_story_norm: { Args: { _t: string }; Returns: string }
+      wall_story_today: { Args: never; Returns: number }
       wall_upgrade_hero: {
         Args: { _hero: number; _tg: number }
         Returns: number
