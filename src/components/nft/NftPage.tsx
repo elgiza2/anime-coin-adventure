@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { trf } from "@/i18n";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -71,7 +72,7 @@ export function NftPage() {
     if (r.paid) {
       setPaymentId(null);
       if (r.refund) toast.error("خلصت النسخ قبل تأكيد دفعتك؛ هيترجعلك المبلغ");
-      if (r.nft) { setRevealed(r.nft); haptic("success"); toast.success(`حصلت على ${findDesign(r.nft.design).name}`); }
+      if (r.nft) { setRevealed(r.nft); haptic("success"); toast.success(trf("حصلت على {card}", { card: findDesign(r.nft.design).name })); }
       await Promise.all([qc.invalidateQueries({ queryKey: ["wall-nfts"] }), qc.invalidateQueries({ queryKey: ["wall-nft-stock"] })]);
     }
   }

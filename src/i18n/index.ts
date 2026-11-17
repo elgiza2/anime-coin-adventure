@@ -90,5 +90,16 @@ export async function loadDict(l: Lang): Promise<Record<string, string>> {
 
 // Shared dictionary for code that translates before inserting names (story lines, typewriter text).
 let ACTIVE: Record<string, string> = {};
-export function setActiveDict(d: Record<string, string>) { ACTIVE = d; }
+let version = 0;
+const listeners = new Set<() => void>();
+export function setActiveDict(d: Record<string, string>) { ACTIVE = d; version++; listeners.forEach((f) => f()); }
+/** Lets screens that translate in code re-render once the dictionary has loaded. */
+export function subscribeDict(f: () => void) { listeners.add(f); return () => { listeners.delete(f); }; }
+export const dictVersion = () => version;
 export function tr(s: string): string { return translateText(s, ACTIVE) ?? s; }
+/** Sentence with named slots, e.g. trf("حصلت على {card}", { card }): the template is one locale entry, each slot is translated on its own. */
+export function trf(tpl: string, vars: Record<string, string | number>, dict: Record<string, string> = ACTIVE): string {
+  let out = dict[tpl] ?? tpl;
+  for (const [k, v] of Object.entries(vars)) out = out.split(`{${k}}`).join(typeof v === "number" ? String(v) : translateText(v, dict) ?? v);
+  return out;
+}

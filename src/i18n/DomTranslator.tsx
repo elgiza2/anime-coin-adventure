@@ -1,5 +1,8 @@
-import { useEffect } from "react";
-import { detectLang, loadDict, RTL, setActiveDict, translateText } from "./index";
+import { useEffect, useSyncExternalStore } from "react";
+import { detectLang, dictVersion, loadDict, RTL, setActiveDict, subscribeDict, translateText } from "./index";
+
+/** Re-render when the player's dictionary arrives (for text translated in code, like the story). */
+export function useDictReady() { return useSyncExternalStore(subscribeDict, dictVersion, () => 0); }
 
 // Translates rendered Arabic text in place (after hydration), so every screen follows the player's Telegram language.
 const ATTRS = ["placeholder", "title", "aria-label", "alt"];

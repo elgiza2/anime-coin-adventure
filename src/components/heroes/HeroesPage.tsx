@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { trf } from "@/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Layers, Lock, Pickaxe, Plus, Zap } from "lucide-react";
@@ -67,7 +68,7 @@ export function HeroesPage() {
     mutationFn: (hi: number) => upFn({ data: { initData, hero: hi } }),
     onSuccess: (r, hi) => {
       haptic("success");
-      toast.success(`${HEROES[hi]!.name} بقى مستوى ${r.level}`);
+      toast.success(trf("{hero} بقى مستوى {level}", { hero: HEROES[hi]!.name, level: r.level }));
       setPick((p) => (p && r.level < MAX_LEVEL ? { hero: hi, level: r.level + 1 } : null));
       void refresh();
     },

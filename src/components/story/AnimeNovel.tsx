@@ -16,6 +16,8 @@ import { AD_PLACEHOLDER_SECONDS, hasRealAds, showRealAd } from "@/lib/rewarded-a
 import { haptic, telegramDisplayName } from "@/lib/telegram";
 import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
+import { tr, trf } from "@/i18n";
+import { useDictReady } from "@/i18n/DomTranslator";
 import dawn from "@/assets/story/chapter-dawn.jpg";
 import forest from "@/assets/story/chapter-forest.jpg";
 import tunnel from "@/assets/story/chapter-tunnel.jpg";
@@ -44,6 +46,7 @@ function useTypewriter(text: string) {
 }
 
 export function AnimeNovel({ initData }: { initData: string }) {
+  useDictReady();
   const [line, setLine] = useState(0);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
@@ -65,9 +68,9 @@ export function AnimeNovel({ initData }: { initData: string }) {
   const needsHero = !!q.data && (!story.path || !story.bond);
   const choosing = s.step === 1 && !hasPicked(s.chapter, story) && !reply;
   const storyLines = s.step === 1 ? sagaLines(s.chapter, story, name)
-    : [{ who: "الراوي", text: `الجولة ${s.step} من ${STEPS_PER_CHAPTER}: ${s.step >= STEPS_PER_CHAPTER ? `${ch.foe} — الزعيم` : `حرس ${ch.foe}`} قدامك.` }];
+    : [{ who: tr("الراوي"), text: trf(s.step >= STEPS_PER_CHAPTER ? "الجولة {step} من {total}: {foe} — الزعيم قدامك." : "الجولة {step} من {total}: حرس {foe} قدامك.", { step: s.step, total: STEPS_PER_CHAPTER, foe: ch.foe }) }];
   const lines = reply ? [{ who: "الراوي", text: reply }] : storyLines;
-  const enc = { title: `${season > 1 ? `الدورة ${season} · ` : ""}${ch.act} — ${ch.title}`, art: ch.art };
+  const enc = { title: `${season > 1 ? `${trf("الدورة {season}", { season })} · ` : ""}${tr(ch.act)} — ${tr(ch.title)}`, art: ch.art };
   const ask = sagaAsk(s.chapter, story, name);
   const cur = lines[line] ?? lines[0]!;
   const lastLine = line >= lines.length - 1;
