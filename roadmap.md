@@ -43,8 +43,9 @@
 - [x] Pages fit screen without scroll; safe top area same background
 - [x] Reopen app on last page, not the start
 - [x] Min withdraw 10,000 ANIME
-- [ ] Publish channel posts day 1–30 (src/content/channel-posts.ts) — waiting for owner's go
+- [ ] Publish channel post day 1 now (owner said go); days 2–30 auto-post
 - [x] Coin shop price = 30% below market
 - [x] Translate remaining untranslated text (story + all pages)
 - [ ] Full translation review: every screen, story, riddles, bot (all 15 languages)
 - [ ] Confirm language auto-follows the player's Telegram language
+- [ ] Verify start (welcome) pages are translated, opened as a real player

@@ -5,10 +5,11 @@ import { authPlayer } from "./tasks.functions";
 import { maskAnswer, type StoryGuess, type StoryState } from "./story-model";
 
 const authInput = z.object({ initData: z.string().min(10).max(4096) });
+const langInput = z.string().max(8).optional();
 
 /** Today's chapter and the caller's progress. The answer itself never leaves the server. */
 export const getStory = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => authInput.parse(d))
+  .inputValidator((d: unknown) => authInput.extend({ lang: langInput }).parse(d))
   .handler(async ({ data }): Promise<StoryState> => {
     const { user, db } = await authPlayer(data.initData);
     const today = await db.rpc("wall_story_today" as never);
@@ -27,11 +28,16 @@ export const getStory = createServerFn({ method: "POST" })
     const s = (st.data ?? { extra_tries: 0, hints: 0, letters: 0 }) as unknown as { extra_tries: number; hints: number; letters: number };
     const a = (at.data ?? { tries: 0, solved: false, solved_rank: null, hint_used: false, letters_shown: 0 }) as unknown as { tries: number; solved: boolean; solved_rank: number | null; hint_used: boolean; letters_shown: number };
     const revealAll = a.solved;
+    // Player's language: the app's choice first, then Telegram's. Arabic comes straight from the DB.
+    const { riddleText } = await import("./story-i18n.server");
+    const loc = riddleText((data.lang ?? user.language_code ?? "ar").toLowerCase().split(/[-_]/)[0] ?? "ar", ch);
+    const text = loc ?? { title: chap.title, story: chap.story, riddle: chap.riddle, hint: chap.hint, answers: [chap.answer_norm] };
+    const answer = text.answers[0]!;
     return {
-      chapter: ch, title: chap.title, story: chap.story, riddle: chap.riddle, image: chap.image_key, reward: chap.reward,
+      chapter: ch, title: text.title, story: text.story, riddle: text.riddle, image: chap.image_key, reward: chap.reward,
       tries: a.tries, extra: s.extra_tries, solved: a.solved, rank: a.solved_rank,
-      hint: a.hint_used || revealAll ? chap.hint : null, hints: s.hints, letters: s.letters,
-      mask: revealAll ? chap.answer_norm : a.letters_shown > 0 ? maskAnswer(chap.answer_norm, a.letters_shown) : null,
+      hint: a.hint_used || revealAll ? text.hint : null, hints: s.hints, letters: s.letters,
+      mask: revealAll ? answer : a.letters_shown > 0 ? maskAnswer(answer, a.letters_shown) : null,
       lettersShown: a.letters_shown,
       solvers: solvers.count ?? 0, pendingId: pending.data?.id ?? null,
     };
@@ -41,7 +47,18 @@ export const answerStory = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authInput.extend({ guess: z.string().trim().min(1).max(60) }).parse(d))
   .handler(async ({ data }): Promise<StoryGuess> => {
     const { user, db } = await authPlayer(data.initData);
-    const r = await db.rpc("wall_story_answer" as never, { _tg: user.id, _guess: data.guess } as never);
+    // Answers in other languages count too: swap a correct translated guess for the chapter's Arabic answer the DB checks.
+    let guess = data.guess;
+    const today = await db.rpc("wall_story_today" as never);
+    if (!today.error) {
+      const { matchesAnyLanguage } = await import("./story-i18n.server");
+      if (matchesAnyLanguage(Number(today.data), guess)) {
+        const c = await db.from("wall_story_chapters" as never).select("answer_norm").eq("id", Number(today.data)).single();
+        const ans = (c.data as unknown as { answer_norm: string } | null)?.answer_norm;
+        if (ans) guess = ans;
+      }
+    }
+    const r = await db.rpc("wall_story_answer" as never, { _tg: user.id, _guess: guess } as never);
     if (r.error) throw new Error(r.error.message);
     const j = r.data as unknown as { correct: boolean; coins: number; rank: number | null };
     return { correct: j.correct, coins: Number(j.coins), rank: j.rank == null ? null : Number(j.rank) };

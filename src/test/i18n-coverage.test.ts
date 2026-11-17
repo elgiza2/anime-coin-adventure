@@ -47,7 +47,7 @@ function dataStrings(): string[] {
     for (const l of ch.lines) s.push(l.who, l.text);
     for (const o of ch.options) s.push(o.label, o.reply);
   }
-  s.push("إجابة صح! +1,200 ANIME", "إجابة صح! +1,200 ANIME — ترتيبك #3", "3س 20د");
+  s.push("3س 20د");
   return s.filter((t) => AR.test(t));
 }
 
@@ -61,7 +61,7 @@ function builtStrings(dict: Record<string, string>): string[] {
     s.push(trf("الجولة {step} من {total}: {foe} — الزعيم قدامك.", { step: 3, total: 3, foe: ch.foe }, dict));
     s.push(trf("مهمة جديدة (الدورة {season}): ذكريات «{title}» بترجع، والعدو بقى أقوى.", { season: 2, title: ch.title }, dict));
   }
-  s.push(trf("الدورة {season}", { season: 2 }, dict));
+  s.push(trf("الدورة {season}", { season: 2 }, dict), trf("إجابة صح! +{coins} {coin}", { coins: "1,200", coin: "ANIME" }, dict), trf("ترتيبك #{rank}", { rank: 3 }, dict));
   return s;
 }
 

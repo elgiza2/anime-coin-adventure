@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { detectLang, RTL, trf } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Lightbulb, Send, Type, Users, Zap } from "lucide-react";
@@ -33,7 +34,7 @@ export function StoryGame({ initData }: { initData: string }) {
   const spendFn = useServerFn(spendStoryItem);
   const createFn = useServerFn(createTonPayment);
   const checkFn = useServerFn(checkTonPayment);
-  const q = useQuery({ queryKey: ["wall-story", initData], queryFn: () => storyFn({ data: { initData } }), enabled: !!initData });
+  const q = useQuery({ queryKey: ["wall-story", initData], queryFn: () => storyFn({ data: { initData, lang: detectLang() } }), enabled: !!initData });
   const s = q.data;
   const view = s ?? PREVIEW;
   const freeLeft = s ? Math.max(0, FREE_TRIES - s.tries) : FREE_TRIES;
@@ -47,7 +48,7 @@ export function StoryGame({ initData }: { initData: string }) {
     setBusy(true);
     try {
       const r = await answerFn({ data: { initData, guess } });
-      if (r.correct) { haptic("success"); toast.success(`إجابة صح! +${formatAmount(r.coins)} ${COIN.symbol}${r.rank ? ` — ترتيبك #${r.rank}` : ""}`); setGuess(""); }
+      if (r.correct) { haptic("success"); toast.success(`${trf("إجابة صح! +{coins} {coin}", { coins: formatAmount(r.coins), coin: COIN.symbol })}${r.rank ? ` — ${trf("ترتيبك #{rank}", { rank: r.rank })}` : ""}`); setGuess(""); }
       else { haptic("error"); toast.error("إجابة غلط، فكّر تاني أو اسأل الجروب"); }
       await q.refetch();
     } catch (e) { toast.error(shopErrorMessage(e)); }
@@ -101,7 +102,7 @@ export function StoryGame({ initData }: { initData: string }) {
           <p className="mb-1 text-xs font-bold text-accent">لغز النهارده</p>
           <p className="font-display text-base font-extrabold leading-7">{view.riddle}</p>
           {s?.hint && <p className="mt-2 flex items-start gap-1.5 text-sm text-foreground/80"><Lightbulb className="mt-1 size-4 shrink-0 text-accent" />{s.hint}</p>}
-          {s?.mask && <p dir="rtl" className="mt-2 text-center font-display text-2xl font-extrabold tracking-widest text-accent">{s.mask}</p>}
+          {s?.mask && <p dir={RTL.includes(detectLang()) ? "rtl" : "ltr"} className="mt-2 text-center font-display text-2xl font-extrabold tracking-widest text-accent">{s.mask}</p>}
         </div>
 
         {s?.solved ? (
