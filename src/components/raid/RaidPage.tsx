@@ -35,6 +35,7 @@ export function RaidPage() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<SpinResult | null>(null);
   const [busy, setBusy] = useState(false);
+  const [tab, setTab] = useState<"novel" | "riddle" | "raid">("novel");
   useEffect(() => setInitData(getInitData()), []);
 
   const stateFn = useServerFn(getRaidState);
@@ -86,16 +87,22 @@ export function RaidPage() {
   const spins = s?.spins ?? 0;
   const revengeable = (s?.attacks ?? []).filter((a) => !a.blocked && !a.avenged);
 
-  return <main className="nft-night relative mx-auto min-h-dvh max-w-md overflow-hidden pb-28">
+  const tabs = [{ id: "novel", label: "الحكاية" }, { id: "riddle", label: "اللغز" }, { id: "raid", label: "الغارات" }] as const;
+
+  return <main className={cn("nft-night relative mx-auto max-w-md overflow-hidden", tab === "novel" ? "h-dvh" : "min-h-dvh pb-28")}>
     <StarField />
-    <header className="relative z-10 flex items-center gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
-      <h1 className="font-display text-2xl font-extrabold">حكايات السور</h1>
+    {tab === "novel" && <AnimeNovel initData={initData} />}
+    <header className="relative z-20 flex items-center justify-between gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
+      <h1 className="font-display text-xl font-extrabold">حكايات السور</h1>
+      <nav className="glass relative flex rounded-full p-1" aria-label="أقسام اللعبة">
+        <span className="absolute inset-y-1 rounded-full bg-primary transition-all duration-300" style={{ width: "calc((100% - 0.5rem) / 3)", insetInlineStart: `calc(0.25rem + ${tabs.findIndex((t) => t.id === tab)} * (100% - 0.5rem) / 3)` }} />
+        {tabs.map((t) => <button key={t.id} type="button" onClick={() => setTab(t.id)} className={cn("relative z-10 w-16 rounded-full py-1.5 text-xs font-extrabold transition-colors", tab === t.id ? "text-primary-foreground" : "text-foreground/70")}>{t.label}</button>)}
+      </nav>
     </header>
 
-    <AnimeNovel initData={initData} />
-    <StoryGame initData={initData} />
+    {tab === "riddle" && <div className="vn-tab-in"><StoryGame initData={initData} /></div>}
 
-    <h2 className="relative z-10 mx-4 mt-8 font-display text-xl font-extrabold">عجلة الغارات</h2>
+    {tab === "raid" && <div className="vn-tab-in">
     {/* Vault jackpot */}
     <section className="glass raid-vault-glow relative z-10 mx-4 mt-4 rounded-3xl p-4 text-center">
       <p className="text-xs text-foreground/70">الخزينة الكبرى</p>
@@ -154,6 +161,7 @@ export function RaidPage() {
       </div>
       {s?.pendingId && <Button variant="outline" className="mt-2 w-full" disabled={busy} onClick={() => { setBusy(true); confirm(s.pendingId!).catch((e) => toast.error(shopErrorMessage(e))).finally(() => setBusy(false)); }}>تحقق من دفعة سابقة</Button>}
     </section>
+    </div>}
     <BottomNav />
   </main>;
 }

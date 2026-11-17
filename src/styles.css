@@ -415,3 +415,24 @@
 /* Illustrated story chapter */
 .story-panel { background: color-mix(in oklab, var(--card) 88%, transparent); border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); box-shadow: 0 10px 40px oklch(0 0 0 / 0.45); }
 .story-riddle { background: color-mix(in oklab, var(--accent) 10%, transparent); border: 1px dashed color-mix(in oklab, var(--accent) 55%, transparent); }
+
+/* Anime novel full-screen game */
+.vn-bg { animation: vn-pan 14s ease-in-out infinite alternate; }
+.vn-enter { animation: vn-enter 0.7s cubic-bezier(.2,.8,.2,1) both; }
+.vn-flash { animation: vn-flash 0.6s ease-out both; pointer-events: none; background: var(--foreground); }
+.vn-rise { animation: story-rise 0.45s ease-out both; }
+.vn-pop { animation: vn-pop 0.5s cubic-bezier(.3,1.6,.5,1) both; }
+.vn-tab-in { animation: vn-tab 0.4s ease-out both; }
+.vn-caret::after { content: "▍"; margin-inline-start: 2px; animation: vn-blink 0.8s steps(1) infinite; color: var(--accent); }
+.vn-ember { position: absolute; bottom: -10px; width: 4px; height: 4px; border-radius: 9999px; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: vn-ember linear infinite; opacity: 0; }
+.vn-shade { background: linear-gradient(to top, var(--background) 8%, color-mix(in oklab, var(--background) 55%, transparent) 45%, transparent 70%), linear-gradient(to bottom, color-mix(in oklab, var(--background) 70%, transparent), transparent 22%); }
+@keyframes vn-pan { from { transform: scale(1.12) translateX(2%); } to { transform: scale(1.18) translateX(-3%); } }
+@keyframes vn-enter { from { opacity: 0; transform: scale(1.3); filter: blur(8px); } to { opacity: 1; transform: scale(1.12); filter: blur(0); } }
+@keyframes vn-flash { from { opacity: 0.55; } to { opacity: 0; } }
+@keyframes vn-pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+@keyframes vn-tab { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes vn-blink { 50% { opacity: 0; } }
+@keyframes vn-ember { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-90vh) translateX(30px); } }
+@media (prefers-reduced-motion: reduce) {
+  .vn-bg, .vn-enter, .vn-flash, .vn-rise, .vn-pop, .vn-tab-in, .vn-ember { animation: none; }
+}
