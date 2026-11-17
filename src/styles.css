@@ -444,3 +444,18 @@
   backdrop-filter: blur(18px) saturate(160%);
   border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
 }
+
+/* Notifications: frosted pill with a coloured accent edge */
+.app-toast {
+  background: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px -12px oklch(0 0 0 / 0.7);
+  --toast-accent: var(--accent);
+}
+.app-toast-success { --toast-accent: var(--success); }
+.app-toast-error { --toast-accent: var(--destructive); }
+.app-toast { border-inline-start: 3px solid var(--toast-accent); }
+.app-toast-icon { color: var(--toast-accent); background: color-mix(in oklab, var(--toast-accent) 16%, transparent); }
+.app-toast-icon svg { width: 1.1rem; height: 1.1rem; }
