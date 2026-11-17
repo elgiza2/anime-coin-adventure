@@ -4,7 +4,7 @@ export const COIN = { symbol: "ANIME", name: "Animecoin" } as const;
 export const BOT_USERNAME = "Mixsaabot";
 
 export function referralLink(tgId: number | string): string {
-  return `https://t.me/${BOT_USERNAME}?startapp=ref_${tgId}`;
+  return `https://t.me/${BOT_USERNAME}?startapp=ref_${tgId}&mode=fullscreen`;
 }
 
 export function formatAmount(n: number): string {

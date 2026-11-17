@@ -43,4 +43,4 @@
 - [x] Pages fit screen without scroll; safe top area same background
 - [x] Reopen app on last page, not the start
 - [x] Min withdraw 10,000 ANIME
-- [ ] Publish first channel post (src/content/channel-posts.ts) — waiting for owner's go
+- [ ] Publish channel posts day 1–30 (src/content/channel-posts.ts) — waiting for owner's go
