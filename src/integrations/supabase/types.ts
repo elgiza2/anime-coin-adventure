@@ -4317,6 +4317,41 @@ export type Database = {
           },
         ]
       }
+      wall_defense_state: {
+        Row: {
+          best: number
+          created_at: string
+          plays: number
+          runs: number
+          runs_at: string
+          tg_id: number
+        }
+        Insert: {
+          best?: number
+          created_at?: string
+          plays?: number
+          runs?: number
+          runs_at?: string
+          tg_id: number
+        }
+        Update: {
+          best?: number
+          created_at?: string
+          plays?: number
+          runs?: number
+          runs_at?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_defense_state_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_hero_levels: {
         Row: {
           hero: number
@@ -5083,6 +5118,27 @@ export type Database = {
         Returns: number
       }
       wall_daily_checkin: { Args: { _tg: number }; Returns: Json }
+      wall_defense_load: {
+        Args: { _tg: number }
+        Returns: {
+          best: number
+          created_at: string
+          plays: number
+          runs: number
+          runs_at: string
+          tg_id: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "wall_defense_state"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      wall_defense_play: {
+        Args: { _score: number; _tg: number }
+        Returns: Json
+      }
       wall_ensure_heroes: { Args: { _tg: number }; Returns: undefined }
       wall_hero_cost: {
         Args: { _hero: number; _level: number }
