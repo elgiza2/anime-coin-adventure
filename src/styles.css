@@ -436,3 +436,11 @@
 @media (prefers-reduced-motion: reduce) {
   .vn-bg, .vn-enter, .vn-flash, .vn-rise, .vn-pop, .vn-tab-in, .vn-ember { animation: none; }
 }
+
+/* Frosted bottom nav: content stays visible behind it. */
+.nav-blur {
+  background: color-mix(in oklab, var(--background) 35%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+}

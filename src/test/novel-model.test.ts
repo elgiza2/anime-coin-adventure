@@ -1,16 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { ENDING_COINS, reachableEndings, SCENES } from "@/lib/novel-model";
+import { encounter, knockoutPenalty, playsLeft, PLAYS_PACK, stepReward, winChance } from "@/lib/novel-model";
 
-describe("anime novel", () => {
-  it("pays 500 / 1500 / 3000 and 10000 for the paid legend ending", () => {
-    expect(ENDING_COINS).toEqual({ fall: 500, escape: 1500, hero: 3000, legend: 10_000 });
+describe("endless novel", () => {
+  it("5 free plays a day, +1 per ad up to 3, plus bought plays", () => {
+    expect(playsLeft({ playsUsed: 0, adsUsed: 0, bonus: 0 })).toBe(5);
+    expect(playsLeft({ playsUsed: 5, adsUsed: 3, bonus: 0 })).toBe(3);
+    expect(playsLeft({ playsUsed: 8, adsUsed: 3, bonus: 5 })).toBe(5);
   });
-  it("every ending is reachable from the start", () => {
-    expect([...reachableEndings()].sort()).toEqual(["escape", "fall", "hero", "legend"]);
+  it("TON pack gives 5 plays for 0.3 TON", () => {
+    expect(PLAYS_PACK).toMatchObject({ ton: 0.3, plays: 5 });
   });
-  it("the legend ending is only behind the paid choice", () => {
-    const free = SCENES["start"]!.choices!.filter((c) => !c.paid).map((c) => c.to);
-    const freeEnds = new Set(free.flatMap((t) => [...reachableEndings(t)]));
-    expect(freeEnds.has("legend")).toBe(false);
+  it("gets harder each chapter, capped at -15%", () => {
+    expect(winChance("safe", 1)).toBe(80);
+    expect(winChance("bold", 11)).toBe(45);
+    expect(winChance("reckless", 99)).toBe(15);
+    expect(winChance("blade", 99)).toBe(100);
+  });
+  it("boss pays double", () => {
+    expect(stepReward("bold", 1, 1)).toBe(100);
+    expect(stepReward("bold", 1, 3)).toBe(200);
+    expect(stepReward("reckless", 5, 2)).toBe(500);
+  });
+  it("knockout costs 50 coins x chapter, never below zero", () => {
+    expect(knockoutPenalty(4, 1000)).toBe(200);
+    expect(knockoutPenalty(4, 30)).toBe(30);
+  });
+  it("story never runs out", () => {
+    expect(encounter(500, 2).title).toContain("فصل 500");
   });
 });

@@ -1,3 +1,4 @@
+import { PLAYS_PACK } from "./novel-model";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -17,6 +18,7 @@ export const createTonPayment = createServerFn({ method: "POST" })
     const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 }
       : data.pack === "nft_mint" ? { id: "nft_mint", ton: NFT_MINT_TON, coins: 0 }
       : findSpinPack(data.pack) ? { id: data.pack, ton: findSpinPack(data.pack)!.ton, coins: 0 }
+      : data.pack === PLAYS_PACK.id ? { id: PLAYS_PACK.id, ton: PLAYS_PACK.ton, coins: 0 }
       : findStoryItem(data.pack) ? { id: data.pack, ton: findStoryItem(data.pack)!.ton, coins: 0 }
       : findPack(data.pack);
     if (!pack) throw new Error("bad_pack");

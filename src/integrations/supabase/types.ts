@@ -4439,6 +4439,48 @@ export type Database = {
           },
         ]
       }
+      wall_novel_progress: {
+        Row: {
+          ads_used: number
+          bonus_plays: number
+          chapter: number
+          day: string
+          hearts: number
+          losses: number
+          plays_used: number
+          step: number
+          tg_id: number
+          updated_at: string
+          wins: number
+        }
+        Insert: {
+          ads_used?: number
+          bonus_plays?: number
+          chapter?: number
+          day?: string
+          hearts?: number
+          losses?: number
+          plays_used?: number
+          step?: number
+          tg_id: number
+          updated_at?: string
+          wins?: number
+        }
+        Update: {
+          ads_used?: number
+          bonus_plays?: number
+          chapter?: number
+          day?: string
+          hearts?: number
+          losses?: number
+          plays_used?: number
+          step?: number
+          tg_id?: number
+          updated_at?: string
+          wins?: number
+        }
+        Relationships: []
+      }
       wall_novel_runs: {
         Row: {
           coins: number
@@ -5240,9 +5282,33 @@ export type Database = {
         }[]
       }
       wall_nft_roll: { Args: { _r: number }; Returns: number }
+      wall_novel_ad: { Args: { _tg: number }; Returns: Json }
       wall_novel_finish: {
         Args: { _ending: string; _tg: number }
         Returns: Json
+      }
+      wall_novel_play: { Args: { _risk: string; _tg: number }; Returns: Json }
+      wall_novel_row: {
+        Args: { _tg: number }
+        Returns: {
+          ads_used: number
+          bonus_plays: number
+          chapter: number
+          day: string
+          hearts: number
+          losses: number
+          plays_used: number
+          step: number
+          tg_id: number
+          updated_at: string
+          wins: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "wall_novel_progress"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       wall_raid_load: {
         Args: { _tg: number }
