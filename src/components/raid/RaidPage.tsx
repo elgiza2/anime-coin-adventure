@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ChevronRight, KeyRound, Shield, Swords } from "lucide-react";
+import { KeyRound, Shield, Swords } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -88,7 +87,6 @@ export function RaidPage() {
   return <main className="nft-night relative mx-auto min-h-dvh max-w-md overflow-hidden pb-28">
     <StarField />
     <header className="relative z-10 flex items-center gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
-      <Link to="/battle" aria-label="رجوع لساحة الحرب" className="glass inline-flex size-10 items-center justify-center rounded-full"><ChevronRight className="size-5" /></Link>
       <h1 className="font-display text-2xl font-extrabold">غارات الأسوار</h1>
     </header>
 
