@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { INTRO_LINE_KO, INTRO_STILL, INTRO_VIDEO } from "./nft-art";
+import { INTRO_LINE_KO, INTRO_POSTER, INTRO_STILL, INTRO_VIDEO } from "./nft-art";
 
 // Deterministic star field so server and browser render the same markup.
 const STARS = Array.from({ length: 90 }, (_, i) => {
@@ -18,8 +18,14 @@ export function NftIntro({ onDone }: { onDone: () => void }) {
   const done = useRef(false);
   const finish = () => { if (!done.current) { done.current = true; window.speechSynthesis?.cancel(); onDone(); } };
 
+  const video = useRef<HTMLVideoElement>(null);
   useEffect(() => {
-    if (INTRO_VIDEO) return;
+    if (INTRO_VIDEO) {
+      // Try with Mikasa's voice; if the browser blocks sound, play muted instead of freezing.
+      const v = video.current;
+      v?.play().catch(() => { if (v) { v.muted = true; void v.play().catch(finish); } });
+      return;
+    }
     // Fallback voice until the generated clip exists: Korean line, no subtitles.
     const synth = window.speechSynthesis;
     let t: ReturnType<typeof setTimeout> | undefined;
@@ -37,7 +43,7 @@ export function NftIntro({ onDone }: { onDone: () => void }) {
 
   return <div className="nft-night fixed inset-0 z-50 overflow-hidden">
     {INTRO_VIDEO ? (
-      <video src={INTRO_VIDEO} poster={INTRO_STILL} autoPlay playsInline onEnded={finish} onError={finish} className="absolute inset-0 size-full object-cover" />
+      <video ref={video} src={INTRO_VIDEO} poster={INTRO_POSTER} playsInline preload="auto" onEnded={finish} onError={finish} className="absolute inset-0 size-full object-cover" />
     ) : <>
       <StarField className="nft-intro-stars" />
       <div className="nft-intro-dusk absolute inset-0" />
