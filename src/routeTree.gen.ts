@@ -15,7 +15,6 @@ import { Route as HeroesRouteImport } from './routes/heroes'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
-import { Route as ZzPassPreviewRouteImport } from './routes/zz-pass-preview'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
 
@@ -49,11 +48,6 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ZzPassPreviewRoute = ZzPassPreviewRouteImport.update({
-  id: '/zz-pass-preview',
-  path: '/zz-pass-preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicTonconnectManifestRoute =
   ApiPublicTonconnectManifestRouteImport.update({
     id: '/api/public/tonconnect-manifest',
@@ -73,7 +67,6 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
-  '/zz-pass-preview': typeof ZzPassPreviewRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
@@ -84,7 +77,6 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
-  '/zz-pass-preview': typeof ZzPassPreviewRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
@@ -96,7 +88,6 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
-  '/zz-pass-preview': typeof ZzPassPreviewRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
@@ -109,7 +100,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tasks'
     | '/wallet'
-    | '/zz-pass-preview'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
   fileRoutesByTo: FileRoutesByTo
@@ -120,7 +110,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tasks'
     | '/wallet'
-    | '/zz-pass-preview'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
   id:
@@ -131,7 +120,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tasks'
     | '/wallet'
-    | '/zz-pass-preview'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
   fileRoutesById: FileRoutesById
@@ -143,7 +131,6 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   TasksRoute: typeof TasksRoute
   WalletRoute: typeof WalletRoute
-  ZzPassPreviewRoute: typeof ZzPassPreviewRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
 }
@@ -192,13 +179,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/zz-pass-preview': {
-      id: '/zz-pass-preview'
-      path: '/zz-pass-preview'
-      fullPath: '/zz-pass-preview'
-      preLoaderRoute: typeof ZzPassPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/tonconnect-manifest': {
       id: '/api/public/tonconnect-manifest'
       path: '/api/public/tonconnect-manifest'
@@ -223,7 +203,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   TasksRoute: TasksRoute,
   WalletRoute: WalletRoute,
-  ZzPassPreviewRoute: ZzPassPreviewRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
 }
