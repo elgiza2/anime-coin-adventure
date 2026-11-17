@@ -2,11 +2,13 @@
 export const TREASURY_ADDRESS = "UQAp1QxnLJ2z44IooUovvtVShw7hJBEdxCRV3RlbCYC3D8qj";
 
 export type PackId = "starter" | "soldier" | "captain" | "commander";
+// Coins per TON = 30% cheaper than market: TON $1.60 / (ANIME $0.002135 x 0.7) ≈ 1,070 (Binance, Nov 17 2026).
+export const COINS_PER_TON = 1_070;
 export const PACKS: { id: PackId; ton: number; coins: number; label: string }[] = [
-  { id: "starter", ton: 0.5, coins: 25_000, label: "مجند" },
-  { id: "soldier", ton: 1, coins: 60_000, label: "جندي" },
-  { id: "captain", ton: 3, coins: 200_000, label: "كابتن" },
-  { id: "commander", ton: 10, coins: 800_000, label: "قائد" },
+  { id: "starter", ton: 0.5, coins: 535, label: "مجند" },
+  { id: "soldier", ton: 1, coins: 1_070, label: "جندي" },
+  { id: "captain", ton: 3, coins: 3_210, label: "كابتن" },
+  { id: "commander", ton: 10, coins: 10_700, label: "قائد" },
 ];
 export function findPack(id: string) {
   return PACKS.find((p) => p.id === id);

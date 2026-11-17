@@ -8,7 +8,7 @@ describe("TON shop", () => {
     const ref = beginCell().storeUint(0, 32).storeStringTail(text).endCell().toBoc({ idx: false, crc32: false }).toString("base64");
     expect(commentPayload(text)).toBe(ref);
   });
-  it("1 TON pack gives 60,000 coins", () => expect(findPack("soldier")?.coins).toBe(60_000));
+  it("1 TON pack gives 1,070 coins (30% under market)", () => expect(findPack("soldier")?.coins).toBe(1_070));
   it("0.5 TON in nano", () => expect(toNano(0.5)).toBe(500_000_000n));
 });
 
