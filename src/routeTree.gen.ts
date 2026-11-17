@@ -14,6 +14,7 @@ import { Route as BattleRouteImport } from './routes/battle'
 import { Route as HeroesRouteImport } from './routes/heroes'
 import { Route as NftRouteImport } from './routes/nft'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RaidRouteImport } from './routes/raid'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
@@ -44,6 +45,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RaidRoute = RaidRouteImport.update({
+  id: '/raid',
+  path: '/raid',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/heroes': typeof HeroesRoute
   '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
+  '/raid': typeof RaidRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/heroes'
     | '/nft'
     | '/profile'
+    | '/raid'
     | '/tasks'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/heroes'
     | '/nft'
     | '/profile'
+    | '/raid'
     | '/tasks'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/heroes'
     | '/nft'
     | '/profile'
+    | '/raid'
     | '/tasks'
     | '/wallet'
     | '/api/public/tonconnect-manifest'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   HeroesRoute: typeof HeroesRoute
   NftRoute: typeof NftRoute
   ProfileRoute: typeof ProfileRoute
+  RaidRoute: typeof RaidRoute
   TasksRoute: typeof TasksRoute
   WalletRoute: typeof WalletRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/raid': {
+      id: '/raid'
+      path: '/raid'
+      fullPath: '/raid'
+      preLoaderRoute: typeof RaidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tasks': {
       id: '/tasks'
       path: '/tasks'
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroesRoute: HeroesRoute,
   NftRoute: NftRoute,
   ProfileRoute: ProfileRoute,
+  RaidRoute: RaidRoute,
   TasksRoute: TasksRoute,
   WalletRoute: WalletRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,

@@ -103,6 +103,14 @@ export function BattlePage() {
 
       {/* NFT entry + Mine Pass */}
       <section className="absolute inset-x-3 bottom-24 z-10 space-y-2">
+        <Link to="/raid" className="glass flex items-center gap-3 rounded-2xl px-4 py-3">
+          <AnimatedEmoji name="spark" className="size-8 shrink-0 text-accent" />
+          <span className="min-w-0 flex-1">
+            <span className="block font-display text-base font-extrabold">غارة الخزينة</span>
+            <span className="block text-xs text-muted-foreground">لف، اهجم، انتقم وافتح الخزينة</span>
+          </span>
+          <span className="btn-cta shrink-0 rounded-xl px-4 py-2 text-sm font-extrabold">العب</span>
+        </Link>
         <Link to="/nft" className="glass flex items-center gap-3 rounded-2xl px-4 py-3">
           <AnimatedEmoji name="gem" className="size-8 shrink-0 text-accent" />
           <span className="min-w-0 flex-1">

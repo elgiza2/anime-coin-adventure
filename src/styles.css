@@ -400,3 +400,14 @@
 @media (prefers-reduced-motion: reduce) {
   .nft-intro-hero, .nft-intro-dusk, .nft-intro-speed, .nft-intro-stars, .nft-star, .nft-float { animation-duration: 0.01ms; }
 }
+
+/* Vault Raid game */
+.raid-wheel {
+  background: repeating-conic-gradient(from -22.5deg, color-mix(in oklab, var(--accent) 85%, var(--background)) 0 45deg, color-mix(in oklab, var(--secondary) 90%, var(--background)) 45deg 90deg);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 55%, transparent), 0 0 40px color-mix(in oklab, var(--accent) 45%, transparent);
+  transition: transform 3.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.raid-vault-glow { box-shadow: 0 0 30px color-mix(in oklab, var(--accent) 40%, transparent); }
+.raid-pop { animation: raid-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+@keyframes raid-pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .raid-wheel { transition-duration: 0.3s; } .raid-pop { animation: none; } }

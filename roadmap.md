@@ -31,3 +31,4 @@
 - [x] Videos for heroes 3-5 (آرين، ليوك، إيفان)
 - [ ] Later (on hold): VIP; more bottom-nav pages
 - [ ] Watch-ad tasks on the Tasks page (Monetag)
+- [x] Games: Vault Raid page (wheel, raids + revenge, vault jackpot in coins, TON spin packs); button on war page

@@ -55,6 +55,8 @@ export function shopErrorMessage(e: unknown): string {
   const m = e instanceof Error ? e.message : String(e);
   if (m.includes("ad_limit")) return "خلصت إعلانات النهارده، ارجع بكرة";
   if (m.includes("ad_too_fast")) return "استنى ثواني قبل الإعلان الجاي";
+  if (m.includes("no_spins")) return "خلصت اللفات، استنى أو اشتري لفات";
+  if (m.includes("no_revenge")) return "الانتقام ده اتعمل قبل كده";
   if (m.includes("sold_out")) return "خلصت كل النسخ";
   if (m.includes("not_found_yet")) return "لسه الدفعة موصلتش، استنى دقيقة وجرب تاني";
   if (/reject|cancel/i.test(m)) return "اتلغى الدفع";
