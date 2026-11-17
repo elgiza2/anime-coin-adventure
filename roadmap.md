@@ -39,3 +39,7 @@
 - [ ] Daily bot notifications + chat gifts with a claim button that credits the account
 - [ ] 30 English posts with new images; auto-post 2-3/day to the news channel (owner says when to start)
 - [ ] Custom emoji packs in /start — needs the bot to own a Fragment username (Telegram rule)
+- [ ] Verified badge from Des_Ch_9722f_by_TgEmodziBot pack
+- [ ] Pages fit screen without scroll; safe top area same background
+- [ ] Reopen app on last page, not the start
+- [ ] Min withdraw 10,000 ANIME

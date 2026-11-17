@@ -13,7 +13,7 @@ import { shopErrorMessage } from "@/lib/shop-model";
 import { getTonConnect } from "@/lib/ton-connect";
 
 export function VerifiedBadge() {
-  return <span aria-label="حساب موثق" title="حساب موثق بتصريح التعدين" className="inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-success bg-success/15 text-sm font-bold text-success">✓</span>;
+  return <span aria-label="حساب موثق" title="حساب موثق بتصريح التعدين" className="inline-flex"><AnimatedEmoji name="verified" keepColors className="size-6" /></span>;
 }
 
 export function MinePassCard({ initData, variant = "row" }: { initData: string; variant?: "row" | "stacked" }) {

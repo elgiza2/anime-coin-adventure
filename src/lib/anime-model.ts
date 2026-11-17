@@ -1,4 +1,4 @@
-export const ANIME_MIN_WITHDRAW = 1000;
+export const ANIME_MIN_WITHDRAW = 10_000;
 export const ANIME_WAIT_DAYS = 30;
 export const ANIME_USD_PER_1000 = 2;
 const DAY = 86_400_000;

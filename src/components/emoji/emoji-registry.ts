@@ -12,6 +12,7 @@ import shields from "@/assets/emoji/shields.json.asset.json";
 import spark from "@/assets/emoji/spark.json.asset.json";
 import sparkle from "@/assets/emoji/sparkle.json.asset.json";
 import ton from "@/assets/emoji/ton.json.asset.json";
+import verified from "@/assets/emoji/verified.json.asset.json";
 import wallet from "@/assets/emoji/wallet.json.asset.json";
 
 export const EMOJI = {
@@ -28,6 +29,7 @@ export const EMOJI = {
   spark: spark.url,
   sparkle: sparkle.url,
   ton: ton.url,
+  verified: verified.url,
   wallet: wallet.url,
 } as const;
 

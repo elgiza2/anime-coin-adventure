@@ -73,10 +73,13 @@ export function AnimatedEmoji({
   name,
   className,
   loop = true,
+  keepColors = false,
 }: {
   name: EmojiName;
   className?: string;
   loop?: boolean;
+  /** Full-colour emoji (e.g. the verified badge) skip tinting. */
+  keepColors?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -92,7 +95,7 @@ export function AnimatedEmoji({
       .then(([lottie, json]) => {
         if (!alive) return;
         const data = structuredClone(json);
-        recolor(data, cssColorToRgb(getComputedStyle(el).color));
+        if (!keepColors) recolor(data, cssColorToRgb(getComputedStyle(el).color));
         anim = lottie.loadAnimation({
           container: el,
           renderer: "svg",
@@ -112,7 +115,7 @@ export function AnimatedEmoji({
       io?.disconnect();
       anim?.destroy();
     };
-  }, [name, loop]);
+  }, [name, loop, keepColors]);
 
   return <span ref={ref} aria-hidden className={cn("inline-block shrink-0 [&>svg]:block", className)} />;
 }
