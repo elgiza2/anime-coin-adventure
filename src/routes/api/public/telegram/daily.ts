@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { POSTS } from "@/content/channel-posts";
 import { BATCH, cronSecret, currentSlot, DAILY_GIFT_COINS, slotMessage } from "@/lib/bot-daily.server";
 
 const esc = (s: string) => s.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]!);
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
         const { data: locked } = await db.rpc("wall_job_lock" as never, { _name: "daily", _seconds: 50 } as never);
         if (!locked) return Response.json({ ok: true, skipped: "running" });
 
+        const posted = await autoPost(db, token, new URL(request.url).origin);
         const slot = currentSlot();
         let giftId: string | null = null;
         if (slot.hour === 8) {
@@ -47,8 +49,33 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
           await new Promise((r) => setTimeout(r, 40));
         }
         await db.from("wall_jobs" as never).update({ locked_until: new Date().toISOString() } as never).eq("name", "daily");
-        return Response.json({ ok: true, slot: slot.key, sent, blocked, remaining: (users?.length ?? 0) === BATCH });
+        return Response.json({ ok: true, posted, slot: slot.key, sent, blocked, remaining: (users?.length ?? 0) === BATCH });
       },
     },
   },
 });
+
+// One channel post per day (from 14:00 UTC), in order, each exactly once. Progress rows live in wall_jobs as "post:<day>".
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function autoPost(db: any, token: string, origin: string): Promise<number | null> {
+  const channel = process.env["TELEGRAM_CHANNEL_ID"];
+  const now = new Date();
+  if (!channel || now.getUTCHours() < 14) return null;
+  const { data: rows } = await db.from("wall_jobs").select("name, locked_until").like("name", "post:%");
+  const done = (rows ?? []) as { name: string; locked_until: string }[];
+  const today = now.toISOString().slice(0, 10);
+  if (done.some((r) => r.locked_until.slice(0, 10) === today)) return null;
+  const next = POSTS.find((p) => !done.some((r) => r.name === `post:${p.day}`));
+  if (!next) return null;
+  const { error } = await db.from("wall_jobs").insert({ name: `post:${next.day}`, locked_until: now.toISOString() });
+  if (error) return null; // another run claimed it
+  const photo = next.image.startsWith("http") ? next.image : origin + next.image;
+  const send = (buttons: unknown) => fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: channel, photo, caption: next.caption, parse_mode: "HTML", reply_markup: { inline_keyboard: buttons } }),
+  });
+  let res = await send(next.buttons);
+  if (!res.ok) res = await send(next.buttons.map((r) => r.map(({ text, url }) => ({ text, url }))));
+  if (!res.ok) { await db.from("wall_jobs").delete().eq("name", `post:${next.day}`); console.error("post failed", await res.text()); return null; }
+  return next.day;
+}

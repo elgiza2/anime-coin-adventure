@@ -1,4 +1,4 @@
-// Channel posts, drafted ahead of time. Nothing here is sent until the owner says "publish".
+// Channel posts. Published automatically, one per day, by the daily scheduler endpoint.
 import { ANIME_EXCHANGES } from "@/lib/anime-exchanges";
 
 export const APP_LINK = "https://t.me/Mixsaabot?startapp";
