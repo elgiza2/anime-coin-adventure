@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import cover from "@/assets/brand/bot-start-cover.jpg?inline";
 
 const APP_URL = "https://t.me/Mixsaabot?startapp";
 const GROUP = "https://t.me/micahub";
@@ -52,30 +53,40 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         } | null;
         const msg = update?.message;
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
-          const send = (caption: string) => fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: msg.chat!.id,
-              parse_mode: "HTML",
-              photo: new URL("/api/public/telegram/cover", request.url).toString(),
-              caption,
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }],
-                  [{ text: "👥 Join the group", url: GROUP, style: "success" }],
-                  [
-                    { text: "💎 $ANIME on Binance", url: "https://www.binance.com/en/trade/ANIME_USDT", style: "danger" },
-                  ],
-                ],
-              },
-            }),
-          });
+          const chatId = msg.chat!.id;
+          const reply_markup = {
+            inline_keyboard: [
+              [{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }],
+              [{ text: "👥 Join the group", url: GROUP, style: "success" }],
+              [{ text: "💎 $ANIME on Binance", url: "https://www.binance.com/en/trade/ANIME_USDT", style: "danger" }],
+            ],
+          };
+          const api = `https://api.telegram.org/bot${token}`;
+          // Upload the photo bytes directly so no public image link is needed.
+          const sendPhoto = (caption: string) => {
+            const b64 = cover.slice(cover.indexOf(",") + 1);
+            const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+            const fd = new FormData();
+            fd.append("chat_id", String(chatId));
+            fd.append("parse_mode", "HTML");
+            fd.append("caption", caption);
+            fd.append("reply_markup", JSON.stringify(reply_markup));
+            fd.append("photo", new Blob([bytes], { type: "image/jpeg" }), "mikasa.jpg");
+            return fetch(`${api}/sendPhoto`, { method: "POST", body: fd });
+          };
           const caption = startText(esc(msg.from?.first_name || "Soldier"));
-          const res = await send(caption);
-          // If Telegram rejects the animated emoji, resend with the plain ones.
-          if (!res.ok) console.error("start send failed", res.status, await res.clone().text());
-          if (!res.ok) await send(caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1"));
+          const plain = caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1");
+          let res = await sendPhoto(caption);
+          if (!res.ok) { console.error("start photo", res.status, await res.text()); res = await sendPhoto(plain); }
+          if (!res.ok) {
+            console.error("start photo plain", res.status, await res.text());
+            // Last resort: text only, so /start always answers.
+            await fetch(`${api}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ chat_id: chatId, parse_mode: "HTML", text: plain, reply_markup }),
+            });
+          }
         }
         return Response.json({ ok: true });
       },
