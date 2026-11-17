@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { preloadVideos } from "@/lib/video-preload";
 import { Toaster } from "@/components/ui/sonner";
+import { DomTranslator } from "@/i18n/DomTranslator";
 import { rememberPage } from "@/lib/last-page";
 
 import appCss from "../styles.css?url";
@@ -181,7 +182,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <Toaster position="top-center" theme="dark" dir="rtl" offset={14} gap={8} />
+      <DomTranslator />
+      <Toaster position="top-center" theme="dark" offset={14} gap={8} />
     </QueryClientProvider>
   );
 }

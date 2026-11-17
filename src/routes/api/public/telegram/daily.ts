@@ -28,7 +28,7 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
           giftId = data as unknown as string;
         }
         const { data: users, error } = await db.from("wall_users")
-          .select("tg_id, first_name")
+          .select("tg_id, first_name, language_code")
           .eq("bot_blocked" as never, false as never)
           .or(`notified_slot.is.null,notified_slot.neq.${slot.key}`)
           .limit(BATCH);
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/api/public/telegram/daily")({
 
         let sent = 0, blocked = 0;
         for (const u of users ?? []) {
-          const m = slotMessage(slot.hour, esc(u.first_name || "Soldier"), giftId);
+          const m = slotMessage(slot.hour, esc(u.first_name || "Soldier"), giftId, u.language_code);
           const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

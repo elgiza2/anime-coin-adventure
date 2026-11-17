@@ -1,3 +1,4 @@
+import { bt, type BotKey } from "@/lib/bot-i18n";
 import { createFileRoute } from "@tanstack/react-router";
 import cover from "@/assets/brand/bot-start-cover.jpg?inline";
 
@@ -23,18 +24,19 @@ async function secretFor(token: string) {
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function startText(name: string) {
+function startText(name: string, lang?: string) {
+  const t = (k: BotKey, v?: Record<string, string>) => bt(lang, k, v);
   return [
-    `<b>${E.fire} Welcome, ${name}.</b>`,
+    `<b>${E.fire} ${t("welcome", { name })}</b>`,
     "",
-    "<b>Mikasa is calling you to the wall.</b>",
+    `<b>${t("calling")}</b>`,
     "",
-    `<b>${E.coin} Mine $ANIME every day</b> — your level sets your daily earnings.`,
-    `<b>${E.gift} Mint limited NFT cards</b> — only a few copies are left.`,
-    `<b>${E.bolt} Play the endless anime story</b> — win, lose, and fight again.`,
-    `<b>${E.gem} $ANIME is listed on Binance.</b>`,
+    `<b>${E.coin} ${t("mine")}</b> — ${t("mineSub")}`,
+    `<b>${E.gift} ${t("nft")}</b> — ${t("nftSub")}`,
+    `<b>${E.bolt} ${t("story")}</b> — ${t("storySub")}`,
+    `<b>${E.gem} ${t("listed")}</b>`,
     "",
-    `<b>${E.star} Tap below and take your place.</b>`,
+    `<b>${E.star} ${t("tap")}</b>`,
   ].join("\n");
 }
 
@@ -57,11 +59,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
           const { data, error } = await db.rpc("wall_claim_gift" as never, { _gift: cb.data.slice(5), _tg: cb.from.id } as never);
           const m = error?.message ?? "";
-          const text = !error ? `🎁 +${Number(data)} coins added to your account!`
-            : m.includes("gift_claimed") ? "You already claimed this gift."
-            : m.includes("gift_expired") ? "This gift has expired. A new one comes tomorrow."
-            : m.includes("no_user") ? "Open the game once first, then claim your gift."
-            : "Something went wrong, try again.";
+          const cl = cb.from?.language_code;
+          const text = !error ? `🎁 ${bt(cl, "giftOk", { coins: Number(data) })}`
+            : bt(cl, m.includes("gift_claimed") ? "giftDone" : m.includes("gift_expired") ? "giftExp" : m.includes("no_user") ? "giftNoUser" : "oops");
           await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ callback_query_id: cb.id, text, show_alert: true }),
@@ -71,12 +71,13 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const msg = update?.message;
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
           const chatId = msg.chat!.id;
+          const lang = msg.from?.language_code;
           // Premium animated emoji on each button; plain emoji kept for a fallback if Telegram refuses them.
           const btn = (icon: string, alt: string, text: string, url: string, style: string) => ({ text, alt, url, style, icon_custom_emoji_id: icon });
           const rows = [
-            [btn("5046752770854487087", "⚔️", "Open the game", APP_URL, "primary")],
-            [btn("5046769637191058547", "👥", "Join the group", GROUP, "success"), btn("4992560350982309130", "📢", "Community", COMMUNITY, "success")],
-            [btn("5127459531378394661", "💎", "$ANIME on Binance", "https://www.binance.com/en/trade/ANIME_USDT", "danger")],
+            [btn("5046752770854487087", "⚔️", bt(lang, "open"), APP_URL, "primary")],
+            [btn("5046769637191058547", "👥", bt(lang, "group"), GROUP, "success"), btn("4992560350982309130", "📢", bt(lang, "community"), COMMUNITY, "success")],
+            [btn("5127459531378394661", "💎", bt(lang, "binance"), "https://www.binance.com/en/trade/ANIME_USDT", "danger")],
           ];
           const premium = { inline_keyboard: rows.map((r) => r.map(({ alt: _a, ...b }) => b)) };
           const basic = { inline_keyboard: rows.map((r) => r.map(({ alt, text, url, style }) => ({ text: `${alt} ${text}`, url, style }))) };
@@ -94,7 +95,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             fd.append("photo", new Blob([bytes], { type: "image/jpeg" }), "mikasa.jpg");
             return fetch(`${api}/sendPhoto`, { method: "POST", body: fd });
           };
-          const caption = startText(esc(msg.from?.first_name || "Soldier"));
+          const caption = startText(esc(msg.from?.first_name || "Soldier"), lang);
           const plain = caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1");
           let res = await sendPhoto(caption);
           if (!res.ok) { console.error("start photo", res.status, await res.text()); reply_markup = basic; res = await sendPhoto(caption); }

@@ -9,6 +9,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { detectLang, LANG_NAMES, LANGS, setLang, type Lang } from "@/i18n";
 import { COIN, formatAmount, referralLink } from "@/lib/coin";
 import { getHeroBoard } from "@/lib/heroes.functions";
 import { totalRate, TOTAL_MAX } from "@/lib/heroes-model";
@@ -17,6 +18,8 @@ import { getInitData, shareLink } from "@/lib/telegram";
 import { MinePassCard, VerifiedBadge } from "./MinePassCard";
 
 export function ProfilePage() {
+  const [lang, setLangState] = useState<Lang>("ar");
+  useEffect(() => setLangState(detectLang()), []);
   const [initData, setInitData] = useState("");
   const [tab, setTab] = useState<"team" | "leaders">("team");
   const [page, setPage] = useState(0);
@@ -91,7 +94,7 @@ export function ProfilePage() {
       </section>
       <section className="mt-6 border-t border-border pt-5">
         <h2 className="mb-2 text-xl font-extrabold">الإعدادات</h2>
-        <div className="flex items-center gap-3 border-b border-border py-4"><AnimatedEmoji name="globe" className="size-7 text-success" /><span className="flex-1 font-semibold">اللغة</span><span className="text-sm text-muted-foreground">العربية</span></div>
+        <div className="flex items-center gap-3 border-b border-border py-4"><AnimatedEmoji name="globe" className="size-7 text-success" /><span className="flex-1 font-semibold">اللغة</span><select data-no-tr aria-label="اللغة" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="rounded-lg border border-border bg-card px-2 py-1 text-sm text-foreground">{LANGS.map((l) => <option key={l} value={l}>{LANG_NAMES[l]}</option>)}</select></div>
         <Button variant="ghost" asChild className="h-auto w-full justify-start gap-3 rounded-none border-b border-border px-0 py-4"><Link to="/"><AnimatedEmoji name="orbit" className="size-7 text-accent" /><span className="flex-1 text-start font-semibold">أعد مشاهدة القصة</span><span aria-hidden="true" className="text-muted-foreground">←</span></Link></Button>
       </section>
     </div>

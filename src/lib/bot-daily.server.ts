@@ -1,3 +1,4 @@
+import { bt, type BotKey } from "@/lib/bot-i18n";
 // Daily bot reminders + one chat gift per day. Rules mirrored by wall_today_gift / wall_claim_gift.
 export const DAILY_GIFT_COINS = 50;
 export const SLOT_HOURS_UTC = [8, 14, 20] as const; // 3 reminders a day
@@ -16,17 +17,19 @@ export function currentSlot(now = new Date()): { key: string; hour: number } {
   return { key: `${d.toISOString().slice(0, 10)}T${String(hour).padStart(2, "0")}`, hour };
 }
 
-const TEXTS: Record<number, string> = {
-  8: "<b>🎁 Your daily gift is here, {name}.</b>\n\n<b>Mikasa left you {coins} $ANIME coins.</b>\nTap the button to add them to your account — today only.",
-  14: "<b>⚔️ The wall needs you, {name}.</b>\n\n<b>Your heroes have been mining.</b> Collect your coins and push one more level.",
-  20: "<b>📖 Tonight's chapter is waiting, {name}.</b>\n\n<b>Your story continues where you left it.</b> Don't lose your streak.",
+const TEXTS: Record<number, [string, BotKey, BotKey, BotKey]> = {
+  8: ["🎁", "gift1", "gift2", "gift3"],
+  14: ["⚔️", "wall1", "wall2", "wall3"],
+  20: ["📖", "night1", "night2", "night3"],
 };
 
-export function slotMessage(hour: number, name: string, giftId: string | null) {
-  const text = TEXTS[hour]!.replace("{name}", name).replace("{coins}", String(DAILY_GIFT_COINS));
+export function slotMessage(hour: number, name: string, giftId: string | null, lang?: string | null) {
+  const [e, a, b, c] = TEXTS[hour]!;
+  const v = { name, coins: DAILY_GIFT_COINS };
+  const text = `<b>${e} ${bt(lang, a, v)}</b>\n\n<b>${bt(lang, b, v)}</b>\n${bt(lang, c, v)}`;
   const rows: unknown[][] = [];
-  if (giftId) rows.push([{ text: `🎁 Claim ${DAILY_GIFT_COINS} coins`, callback_data: `gift:${giftId}`, style: "success" }]);
-  rows.push([{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }]);
+  if (giftId) rows.push([{ text: `🎁 ${bt(lang, "claim", v)}`, callback_data: `gift:${giftId}`, style: "success" }]);
+  rows.push([{ text: `⚔️ ${bt(lang, "open")}`, url: APP_URL, style: "primary" }]);
   return { text, reply_markup: { inline_keyboard: rows } };
 }
 
