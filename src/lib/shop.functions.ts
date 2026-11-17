@@ -18,6 +18,10 @@ export const createTonPayment = createServerFn({ method: "POST" })
     if (!pack) throw new Error("bad_pack");
     const { user, db } = await authPlayer(data.initData);
     if (pack.id === "nft_mint") {
+      const stock = await db.rpc("wall_nft_remaining" as never);
+      if (stock.error) throw new Error(stock.error.message);
+      const left = ((stock.data ?? []) as { remaining: number }[]).reduce((n, r) => n + Math.max(Number(r.remaining), 0), 0);
+      if (left <= 0) throw new Error("sold_out");
       // Reuse an unpaid mint so a retried wallet transfer is never charged twice.
       const pending = await db.from("wall_payments").select("id, amount_nano").eq("tg_id", user.id).eq("pack", "nft_mint").eq("status", "pending").order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (pending.error) throw new Error(pending.error.message);
@@ -63,7 +67,8 @@ export const checkTonPayment = createServerFn({ method: "POST" })
       if (n.error) throw new Error(n.error.message);
       return n.data ? { serial: Number(n.data.serial), design: n.data.design, mintedAt: n.data.created_at } : null;
     };
-    if (p.status === "paid") return { coins: 0, paid: true, nft: await mintedFor() };
+    if (p.status === "paid") return { coins: 0, paid: true, nft: await mintedFor(), refund: false };
+    if (p.status === "refund_due") return { coins: 0, paid: true, nft: null, refund: true };
 
     const url = `https://toncenter.com/api/v3/transactions?account=${TREASURY_ADDRESS}&limit=100&sort=desc`;
     const res = await fetch(url, { headers: { Accept: "application/json" } });
@@ -79,7 +84,8 @@ export const checkTonPayment = createServerFn({ method: "POST" })
     if (!tx) throw new Error("not_found_yet");
     const { data: coins, error: e2 } = await db.rpc("wall_confirm_payment", { _id: p.id, _tx: tx.hash } as never);
     if (e2) throw new Error(e2.message);
-    return { coins: Number(coins), paid: true, nft: await mintedFor() };
+    const nft = await mintedFor();
+    return { coins: Number(coins), paid: true, nft, refund: p.pack === "nft_mint" && !nft };
   });
 
 export const claimAdReward = createServerFn({ method: "POST" })

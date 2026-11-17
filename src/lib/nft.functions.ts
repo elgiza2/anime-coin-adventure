@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { authPlayer } from "./tasks.functions";
-import type { MintedNft } from "./nft-model";
+import type { MintedNft, NftStock } from "./nft-model";
 
 /** The caller's own minted cards, newest first, plus any unpaid mint to re-check. */
 export const getMyNfts = createServerFn({ method: "POST" })
@@ -19,3 +19,11 @@ export const getMyNfts = createServerFn({ method: "POST" })
       pendingId: pending.data?.id ?? null,
     };
   });
+
+/** Copies left per card (public numbers, no player data). */
+export const getNftStock = createServerFn({ method: "GET" }).handler(async (): Promise<{ stock: NftStock[] }> => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin.rpc("wall_nft_remaining" as never);
+  if (error) throw new Error(error.message);
+  return { stock: ((data ?? []) as NftStock[]).map((r) => ({ design: Number(r.design), cap: Number(r.cap), remaining: Number(r.remaining) })) };
+});

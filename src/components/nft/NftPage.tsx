@@ -7,8 +7,8 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
-import { findDesign, NFT_DESIGNS, NFT_MINT_TON, RARITY_LABEL, type MintedNft } from "@/lib/nft-model";
-import { getMyNfts } from "@/lib/nft.functions";
+import { findDesign, NFT_DESIGNS, NFT_MINT_TON, NFT_TOTAL_SUPPLY, RARITY_LABEL, stockLeft, type MintedNft } from "@/lib/nft-model";
+import { getMyNfts, getNftStock } from "@/lib/nft.functions";
 import { formatPassNumber } from "@/lib/mine-pass-model";
 import { checkTonPayment, createTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
@@ -61,14 +61,20 @@ export function NftPage() {
   const createFn = useServerFn(createTonPayment);
   const checkFn = useServerFn(checkTonPayment);
   const mine = useQuery({ queryKey: ["wall-nfts", initData], queryFn: () => fetchFn({ data: { initData } }), enabled: !!initData });
+  const stockFn = useServerFn(getNftStock);
+  const stockQ = useQuery({ queryKey: ["wall-nft-stock"], queryFn: () => stockFn(), refetchInterval: 30_000 });
+  const stock = stockQ.data?.stock ?? [];
+  const left = stockQ.data ? stockLeft(stock) : null;
+  const soldOut = left === 0;
   const pendingId = paymentId ?? mine.data?.pendingId ?? null;
 
   async function confirm(id: string) {
     const r = await checkFn({ data: { initData, id } });
     if (r.paid) {
       setPaymentId(null);
+      if (r.refund) toast.error("خلصت النسخ قبل تأكيد دفعتك؛ هيترجعلك المبلغ");
       if (r.nft) { setRevealed(r.nft); haptic("success"); toast.success(`حصلت على ${findDesign(r.nft.design).name}`); }
-      await qc.invalidateQueries({ queryKey: ["wall-nfts"] });
+      await Promise.all([qc.invalidateQueries({ queryKey: ["wall-nfts"] }), qc.invalidateQueries({ queryKey: ["wall-nft-stock"] })]);
     }
   }
   async function check() {
@@ -110,16 +116,26 @@ export function NftPage() {
     </section>}
 
     {!intro && <section className="relative z-10 mt-6 space-y-2 px-5">
+      {left !== null && <div className="glass space-y-2 rounded-2xl p-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-foreground/80">النسخ المتبقية</span>
+          <span dir="ltr" className="font-display font-extrabold"><span className="text-accent">{left.toLocaleString("en-US")}</span> / {NFT_TOTAL_SUPPLY.toLocaleString("en-US")}</span>
+        </div>
+        <div dir="ltr" className="h-2 overflow-hidden rounded-full bg-background/60">
+          <div className="h-full rounded-full bg-accent" style={{ width: `${((NFT_TOTAL_SUPPLY - left) / NFT_TOTAL_SUPPLY) * 100}%` }} />
+        </div>
+        <p className="text-[0.7rem] text-foreground/60">{soldOut ? "خلصت كل النسخ" : "كل بطاقة عددها محدود، ولما تخلص مش هتطلع تاني"}</p>
+      </div>}
       <div className="flex items-center justify-between text-sm">
         <span className="text-foreground/80">سعر الـ Mint</span>
         <span dir="ltr" className="font-display text-lg font-extrabold text-accent">{NFT_MINT_TON} TON</span>
       </div>
-      <Button className="btn-cta h-12 w-full rounded-2xl text-lg font-extrabold" disabled={busy || (!!initData && mine.isPending)} onClick={mint}>
-        {busy ? "جارٍ التحقق…" : revealed ? "Mint تاني" : "Mint"}
+      <Button className="btn-cta h-12 w-full rounded-2xl text-lg font-extrabold" disabled={busy || soldOut || (!!initData && mine.isPending)} onClick={mint}>
+        {soldOut ? "Sold out" : busy ? "جارٍ التحقق…" : revealed ? "Mint تاني" : "Mint"}
       </Button>
       {pendingId && <Button variant="outline" className="w-full" disabled={busy} onClick={check}>تحقق من دفعة سابقة</Button>}
       <div className="flex flex-wrap justify-center gap-2 pt-2 text-[0.7rem]">
-        {NFT_DESIGNS.map((d) => <span key={d.id} className={cn("rounded-full border bg-background/40 px-2 py-0.5", RARITY_TEXT[d.rarity])}>{RARITY_LABEL[d.rarity]} {d.weight}%</span>)}
+        {NFT_DESIGNS.map((d) => <span key={d.id} className={cn("rounded-full border bg-background/40 px-2 py-0.5", RARITY_TEXT[d.rarity])}>{RARITY_LABEL[d.rarity]} · <span dir="ltr">{(stock.find((x) => x.design === d.id)?.remaining ?? 0).toLocaleString("en-US")} / {d.cap.toLocaleString("en-US")}</span></span>)}
       </div>
     </section>}
 

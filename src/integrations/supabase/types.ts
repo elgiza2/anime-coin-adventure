@@ -4382,6 +4382,24 @@ export type Database = {
           },
         ]
       }
+      wall_nft_supply: {
+        Row: {
+          cap: number
+          design: number
+          reserved: number
+        }
+        Insert: {
+          cap: number
+          design: number
+          reserved?: number
+        }
+        Update: {
+          cap?: number
+          design?: number
+          reserved?: number
+        }
+        Relationships: []
+      }
       wall_nfts: {
         Row: {
           created_at: string
@@ -4984,6 +5002,15 @@ export type Database = {
       }
       wall_mining_claim: { Args: { _tg: number }; Returns: number }
       wall_mining_rate: { Args: { _tg: number }; Returns: number }
+      wall_nft_pick: { Args: { _r: number }; Returns: number }
+      wall_nft_remaining: {
+        Args: never
+        Returns: {
+          cap: number
+          design: number
+          remaining: number
+        }[]
+      }
       wall_nft_roll: { Args: { _r: number }; Returns: number }
       wall_start_task: {
         Args: { _task: string; _tg: number }
