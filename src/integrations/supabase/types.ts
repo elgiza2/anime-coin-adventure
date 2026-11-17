@@ -4382,6 +4382,45 @@ export type Database = {
           },
         ]
       }
+      wall_nfts: {
+        Row: {
+          created_at: string
+          design: number
+          payment_id: string
+          serial: number
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          design: number
+          payment_id: string
+          serial?: never
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          design?: number
+          payment_id?: string
+          serial?: never
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_nfts_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "wall_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_nfts_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_payments: {
         Row: {
           amount_nano: number
@@ -4945,6 +4984,7 @@ export type Database = {
       }
       wall_mining_claim: { Args: { _tg: number }; Returns: number }
       wall_mining_rate: { Args: { _tg: number }; Returns: number }
+      wall_nft_roll: { Args: { _r: number }; Returns: number }
       wall_start_task: {
         Args: { _task: string; _tg: number }
         Returns: undefined

@@ -16,7 +16,7 @@ export function VerifiedBadge() {
   return <span aria-label="حساب موثق" title="حساب موثق بتصريح التعدين" className="inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-success bg-success/15 text-sm font-bold text-success">✓</span>;
 }
 
-export function MinePassCard({ initData }: { initData: string }) {
+export function MinePassCard({ initData, variant = "row" }: { initData: string; variant?: "row" | "stacked" }) {
   const qc = useQueryClient();
   const fetchFn = useServerFn(getMinePass);
   const createFn = useServerFn(createTonPayment);
@@ -64,6 +64,26 @@ export function MinePassCard({ initData }: { initData: string }) {
       <p className="mt-3 flex items-center justify-center gap-2 text-xs text-foreground/80"><VerifiedBadge />حساب موثق · التعدين مفعّل</p>
     </section>;
   }
+  const actions = <div className="mt-4 space-y-2">
+    <Button className="btn-cta h-11 w-full rounded-xl" disabled={busy || (!!initData && status.isPending) || status.isError} onClick={buy}>{busy ? "جارٍ التحقق…" : "احصل على بطاقتك"}</Button>
+    {pendingId && <Button variant="outline" className="w-full" disabled={busy} onClick={check}>تحقق من دفعة سابقة</Button>}
+    {status.isError && <Button variant="outline" className="w-full" onClick={() => void status.refetch()}>إعادة تحميل التصريح</Button>}
+  </div>;
+  if (variant === "stacked") {
+    return <section className="glass rounded-2xl p-4" aria-label="تصريح التعدين">
+      <div className="flex items-center gap-3">
+        <div className="w-16 shrink-0"><PassArt compact /></div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="text-base font-extrabold" dir="ltr">Mine Pass</h2>
+            <span dir="ltr" className="shrink-0 text-sm font-bold text-accent">{MINE_PASS_TON} TON</span>
+          </div>
+          <p className="mt-1 text-xs leading-relaxed text-foreground/75">فعّل بطاقتك عشان أبطالك يبدأوا التعدين.</p>
+        </div>
+      </div>
+      {actions}
+    </section>;
+  }
   return <section className="wallet-surface rounded-2xl p-4" aria-label="تصريح التعدين">
     <div className="flex items-center gap-4">
       <div className="w-24 shrink-0"><PassArt compact /></div>
@@ -73,11 +93,7 @@ export function MinePassCard({ initData }: { initData: string }) {
         <p dir="ltr" className="mt-2 text-end text-sm font-bold text-accent">{MINE_PASS_TON} TON</p>
       </div>
     </div>
-    <div className="mt-4 space-y-2">
-      <Button className="btn-cta h-11 w-full rounded-xl" disabled={busy || (!!initData && status.isPending) || status.isError} onClick={buy}>{busy ? "جارٍ التحقق…" : "احصل على بطاقتك"}</Button>
-      {pendingId && <Button variant="outline" className="w-full" disabled={busy} onClick={check}>تحقق من دفعة سابقة</Button>}
-      {status.isError && <Button variant="outline" className="w-full" onClick={() => void status.refetch()}>إعادة تحميل التصريح</Button>}
-    </div>
+    {actions}
   </section>;
 }
 

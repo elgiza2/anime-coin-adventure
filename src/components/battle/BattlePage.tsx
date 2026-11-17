@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, Lock, Zap } from "lucide-react";
+import { Clock, Zap } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { BottomNav } from "@/components/BottomNav";
@@ -12,11 +13,7 @@ import { HEROES } from "@/components/heroes/heroes-data";
 import { COIN, formatAmount } from "@/lib/coin";
 import { collectMining, getHeroBoard } from "@/lib/heroes.functions";
 import { coinsPerTitan, isUnlocked, pendingCoins, STORAGE_HOURS, titansSlain, totalRate, upgradeErrorMessage } from "@/lib/heroes-model";
-import { showRewardedAd } from "@/lib/monetag";
-import { adReward, shopErrorMessage } from "@/lib/shop-model";
-import { claimAdReward } from "@/lib/shop.functions";
 import { getInitData, haptic } from "@/lib/telegram";
-import { cn } from "@/lib/utils";
 import { SegmentVideo } from "./SegmentVideo";
 import { MinePassCard } from "@/components/profile/MinePassCard";
 
@@ -29,7 +26,6 @@ export function BattlePage() {
   const qc = useQueryClient();
   const now = useNow(1000);
   const [initData, setInitData] = useState("");
-  const [pick, setPick] = useState<number | null>(null);
   const [pops, setPops] = useState<number[]>([]);
   useEffect(() => setInitData(getInitData()), []);
 
@@ -46,8 +42,7 @@ export function BattlePage() {
   const fill = b && miningEnabled ? Math.min(1, (now - b.minedAt) / (STORAGE_HOURS * 3_600_000)) : 0;
 
   const mine = levels.reduce((m, _, i) => (isUnlocked(i, levels) ? i : m), 0);
-  const h = pick ?? mine;
-  const hero = HEROES[h] ?? HEROES[0];
+  const hero = HEROES[mine] ?? HEROES[0];
   if (!hero) return null;
   const clip = hero.battle ?? hero.video;
 
@@ -68,12 +63,6 @@ export function BattlePage() {
   const ok = (n: number) => { haptic("success"); toast.success(`+${formatAmount(n)} ${COIN.symbol}`); last.current = 0; void refresh(); };
   const collectFn = useServerFn(collectMining);
   const collect = useMutation({ mutationFn: () => collectFn({ data: { initData } }), onSuccess: (r) => ok(r.amount), onError: (e) => toast.error(upgradeErrorMessage(e)) });
-  const adFn = useServerFn(claimAdReward);
-  const ad = useMutation({
-    mutationFn: async () => { await showRewardedAd(); return adFn({ data: { initData } }); },
-    onSuccess: (r) => ok(r.amount),
-    onError: (e) => toast.error(e instanceof Error && e.message === "ad_unavailable" ? "مفيش إعلان متاح دلوقتي، جرب كمان شوية" : shopErrorMessage(e)),
-  });
 
   return (
     <main className="relative mx-auto h-dvh max-w-md overflow-hidden">
@@ -112,25 +101,17 @@ export function BattlePage() {
         {full && <p className="glass mt-2 rounded-full px-3 py-1 text-xs text-destructive">البطل واقف — استلم عشان يكمل القتال</p>}
       </div>
 
-      {/* Hero switcher + ad boost */}
+      {/* NFT entry + Mine Pass */}
       <section className="absolute inset-x-3 bottom-24 z-10 space-y-2">
-        {!miningEnabled && <MinePassCard initData={initData} />}
-        <Button variant="ghost" type="button" disabled={guest || ad.isPending} onClick={() => ad.mutate()}
-          className="glass h-auto w-full rounded-2xl py-2.5 text-sm font-bold disabled:opacity-50">
-          <AnimatedEmoji name="rocket" className="size-5 text-accent" /> اتفرج على إعلان واكسب +{formatAmount(adReward(rate))}
-        </Button>
-        <div className="glass flex justify-between rounded-[22px] p-2">
-          {HEROES.map((x, i) => {
-            const open = isUnlocked(i, levels);
-            return (
-              <Button variant="ghost" key={x.name} type="button" disabled={!open} onClick={() => setPick(i)} aria-label={x.name}
-                className={cn("relative size-14 overflow-hidden rounded-2xl p-0 ring-2", i === h ? "ring-accent" : "ring-transparent")}>
-                <img src={x.image} alt="" className={cn("size-full object-cover object-top", !open && "grayscale brightness-50")} />
-                {!open && <Lock className="absolute inset-0 m-auto size-4" />}
-              </Button>
-            );
-          })}
-        </div>
+        <Link to="/nft" className="glass flex items-center gap-3 rounded-2xl px-4 py-3">
+          <AnimatedEmoji name="gem" className="size-8 shrink-0 text-accent" />
+          <span className="min-w-0 flex-1">
+            <span className="block font-display text-base font-extrabold">NFT الحرب</span>
+            <span className="block text-xs text-muted-foreground">اعمل Mint وخد بطاقة عشوائية</span>
+          </span>
+          <span className="btn-cta shrink-0 rounded-xl px-4 py-2 text-sm font-extrabold">Mint</span>
+        </Link>
+        {!miningEnabled && <MinePassCard initData={initData} variant="stacked" />}
       </section>
 
       <BottomNav />

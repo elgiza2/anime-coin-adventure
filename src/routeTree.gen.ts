@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BattleRouteImport } from './routes/battle'
 import { Route as HeroesRouteImport } from './routes/heroes'
+import { Route as NftRouteImport } from './routes/nft'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
@@ -31,6 +32,11 @@ const BattleRoute = BattleRouteImport.update({
 const HeroesRoute = HeroesRouteImport.update({
   id: '/heroes',
   path: '/heroes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NftRoute = NftRouteImport.update({
+  id: '/nft',
+  path: '/nft',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
   '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
   '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
   '/heroes': typeof HeroesRoute
+  '/nft': typeof NftRoute
   '/profile': typeof ProfileRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/battle'
     | '/heroes'
+    | '/nft'
     | '/profile'
     | '/tasks'
     | '/wallet'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/'
     | '/battle'
     | '/heroes'
+    | '/nft'
     | '/profile'
     | '/tasks'
     | '/wallet'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/'
     | '/battle'
     | '/heroes'
+    | '/nft'
     | '/profile'
     | '/tasks'
     | '/wallet'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BattleRoute: typeof BattleRoute
   HeroesRoute: typeof HeroesRoute
+  NftRoute: typeof NftRoute
   ProfileRoute: typeof ProfileRoute
   TasksRoute: typeof TasksRoute
   WalletRoute: typeof WalletRoute
@@ -156,6 +169,13 @@ declare module '@tanstack/react-router' {
       path: '/heroes'
       fullPath: '/heroes'
       preLoaderRoute: typeof HeroesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nft': {
+      id: '/nft'
+      path: '/nft'
+      fullPath: '/nft'
+      preLoaderRoute: typeof NftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BattleRoute: BattleRoute,
   HeroesRoute: HeroesRoute,
+  NftRoute: NftRoute,
   ProfileRoute: ProfileRoute,
   TasksRoute: TasksRoute,
   WalletRoute: WalletRoute,

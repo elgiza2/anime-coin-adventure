@@ -4,6 +4,7 @@ import { z } from "zod";
 import { commentPayload, findPack, paymentComment, toNano, TREASURY_ADDRESS } from "./shop-model";
 import { authPlayer } from "./tasks.functions";
 import { MINE_PASS_TON } from "./mine-pass-model";
+import { NFT_MINT_TON, type MintedNft } from "./nft-model";
 
 const authInput = z.object({ initData: z.string().min(10).max(4096) });
 
@@ -11,9 +12,17 @@ const authInput = z.object({ initData: z.string().min(10).max(4096) });
 export const createTonPayment = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authInput.extend({ pack: z.string().max(20) }).parse(d))
   .handler(async ({ data }) => {
-    const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 } : findPack(data.pack);
+    const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 }
+      : data.pack === "nft_mint" ? { id: "nft_mint", ton: NFT_MINT_TON, coins: 0 }
+      : findPack(data.pack);
     if (!pack) throw new Error("bad_pack");
     const { user, db } = await authPlayer(data.initData);
+    if (pack.id === "nft_mint") {
+      // Reuse an unpaid mint so a retried wallet transfer is never charged twice.
+      const pending = await db.from("wall_payments").select("id, amount_nano").eq("tg_id", user.id).eq("pack", "nft_mint").eq("status", "pending").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      if (pending.error) throw new Error(pending.error.message);
+      if (pending.data) return { id: pending.data.id, address: TREASURY_ADDRESS, amount: String(pending.data.amount_nano), payload: commentPayload(paymentComment(pending.data.id)) };
+    }
     if (pack.id === "mine_pass") {
       const pass = await db.from("wall_mine_passes").select("pass_number").eq("tg_id", user.id).maybeSingle();
       if (pass.error) throw new Error(pass.error.message);
@@ -48,7 +57,13 @@ export const checkTonPayment = createServerFn({ method: "POST" })
     const { user, db } = await authPlayer(data.initData);
     const { data: p, error } = await db.from("wall_payments").select("*").eq("id", data.id).eq("tg_id", user.id).single();
     if (error || !p) throw new Error("no_payment");
-    if (p.status === "paid") return { coins: 0, paid: true };
+    const mintedFor = async (): Promise<MintedNft | null> => {
+      if (p.pack !== "nft_mint") return null;
+      const n = await db.from("wall_nfts").select("serial, design, created_at").eq("payment_id", p.id).maybeSingle();
+      if (n.error) throw new Error(n.error.message);
+      return n.data ? { serial: Number(n.data.serial), design: n.data.design, mintedAt: n.data.created_at } : null;
+    };
+    if (p.status === "paid") return { coins: 0, paid: true, nft: await mintedFor() };
 
     const url = `https://toncenter.com/api/v3/transactions?account=${TREASURY_ADDRESS}&limit=100&sort=desc`;
     const res = await fetch(url, { headers: { Accept: "application/json" } });
@@ -64,7 +79,7 @@ export const checkTonPayment = createServerFn({ method: "POST" })
     if (!tx) throw new Error("not_found_yet");
     const { data: coins, error: e2 } = await db.rpc("wall_confirm_payment", { _id: p.id, _tx: tx.hash } as never);
     if (e2) throw new Error(e2.message);
-    return { coins: Number(coins), paid: true };
+    return { coins: Number(coins), paid: true, nft: await mintedFor() };
   });
 
 export const claimAdReward = createServerFn({ method: "POST" })
