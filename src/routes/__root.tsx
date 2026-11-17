@@ -9,6 +9,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { preloadVideos } from "@/lib/video-preload";
 import { Toaster } from "@/components/ui/sonner";
 import { rememberPage } from "@/lib/last-page";
 
@@ -138,6 +139,7 @@ type TgFull = {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  useEffect(() => { preloadVideos(); }, []);
   useEffect(() => {
     rememberPage(router.state.location.pathname);
     return router.subscribe("onResolved", (e) => rememberPage(e.toLocation.pathname));
