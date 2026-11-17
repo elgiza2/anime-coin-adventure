@@ -47,6 +47,7 @@ export async function authPlayer(initData: string) {
     _ref: ref ? Number(ref) : null,
   } as never);
   if (error) throw new Error(error.message);
+  if (user.language_code) await db.from("wall_users").update({ language_code: user.language_code } as never).eq("tg_id", user.id);
   return { user, db };
 }
 

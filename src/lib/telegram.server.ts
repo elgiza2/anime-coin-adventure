@@ -1,5 +1,5 @@
 // Telegram Mini App identity: verifies initData signed by our bot (HMAC-SHA256).
-export type TgUser = { id: number; first_name?: string; username?: string; photo_url?: string };
+export type TgUser = { id: number; first_name?: string; username?: string; photo_url?: string; language_code?: string };
 
 const enc = new TextEncoder();
 

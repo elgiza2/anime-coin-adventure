@@ -7,7 +7,7 @@ export const LANG_NAMES: Record<Lang, string> = { ar: "العربية", en: "Eng
 const KEY = "wall_lang";
 
 export function pickLang(code: string | null | undefined): Lang {
-  const c = (code ?? "").toLowerCase().split(/[-_]/)[0];
+  const c = (code ?? "").toLowerCase().split(/[-_]/)[0] ?? "";
   return (LANGS as readonly string[]).includes(c) ? (c as Lang) : "en";
 }
 

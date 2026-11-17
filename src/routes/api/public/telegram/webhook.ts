@@ -52,9 +52,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return new Response("Unauthorized", { status: 401 });
         }
         const update = (await request.json().catch(() => null)) as {
-          message?: { chat?: { id?: number }; text?: string; from?: { first_name?: string } };
+          message?: { chat?: { id?: number }; text?: string; from?: { first_name?: string; language_code?: string } };
         } | null;
-        const cb = (update as { callback_query?: { id: string; data?: string; from: { id: number } } } | null)?.callback_query;
+        const cb = (update as { callback_query?: { id: string; data?: string; from: { id: number; language_code?: string } } } | null)?.callback_query;
         if (cb?.data?.startsWith("gift:")) {
           const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
           const { data, error } = await db.rpc("wall_claim_gift" as never, { _gift: cb.data.slice(5), _tg: cb.from.id } as never);

@@ -4942,6 +4942,7 @@ export type Database = {
           checkin_streak: number
           created_at: string
           first_name: string
+          language_code: string | null
           last_checkin_at: string | null
           last_seen_at: string
           mined_at: string
@@ -4959,6 +4960,7 @@ export type Database = {
           checkin_streak?: number
           created_at?: string
           first_name?: string
+          language_code?: string | null
           last_checkin_at?: string | null
           last_seen_at?: string
           mined_at?: string
@@ -4976,6 +4978,7 @@ export type Database = {
           checkin_streak?: number
           created_at?: string
           first_name?: string
+          language_code?: string | null
           last_checkin_at?: string | null
           last_seen_at?: string
           mined_at?: string
