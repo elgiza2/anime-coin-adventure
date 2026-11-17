@@ -17,13 +17,13 @@ describe("endless novel", () => {
     expect(winChance("blade", 99)).toBe(100);
   });
   it("boss pays double", () => {
-    expect(stepReward("bold", 1, 1)).toBe(100);
-    expect(stepReward("bold", 1, 3)).toBe(200);
-    expect(stepReward("reckless", 5, 2)).toBe(500);
+    expect(stepReward("bold", 1, 1)).toBe(2);
+    expect(stepReward("bold", 1, 3)).toBe(4);
+    expect(stepReward("reckless", 5, 2)).toBe(7);
   });
   it("knockout costs 50 coins x chapter, never below zero", () => {
-    expect(knockoutPenalty(4, 1000)).toBe(200);
-    expect(knockoutPenalty(4, 30)).toBe(30);
+    expect(knockoutPenalty(4, 1000)).toBe(4);
+    expect(knockoutPenalty(4, 2)).toBe(2);
   });
   it("story never runs out", () => {
     expect(encounter(500, 2).title).toContain("فصل 500");

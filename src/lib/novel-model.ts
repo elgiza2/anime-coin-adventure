@@ -17,12 +17,12 @@ export function winChance(risk: Risk, chapter: number) {
 }
 /** Coins for winning a step; the boss (last step) pays double. */
 export function stepReward(risk: Risk, chapter: number, step: number) {
-  const base = (100 + 25 * (chapter - 1)) * (step >= STEPS_PER_CHAPTER ? 2 : 1);
+  const base = (2 + Math.floor((chapter - 1) / 4)) * (step >= STEPS_PER_CHAPTER ? 2 : 1);
   return Math.floor(base * RISKS[risk].mult);
 }
 /** Coins lost when the last heart breaks (chapter restarts from step 1). */
 export function knockoutPenalty(chapter: number, balance: number) {
-  return Math.min(Math.max(balance, 0), 50 * chapter);
+  return Math.min(Math.max(balance, 0), chapter);
 }
 /** Plays left today: free + watched ads − used, plus bought plays (never expire). */
 export function playsLeft(p: { playsUsed: number; adsUsed: number; bonus: number }) {

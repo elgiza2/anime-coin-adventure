@@ -4,7 +4,7 @@ export const SPIN_REGEN_HOURS = 1;
 export const VAULT_KEYS = 3;
 export const VAULT_SHARE = 0.1;
 export const RAID_STEAL_SHARE = 0.1;
-export const RAID_STEAL_CAP = 50_000;
+export const RAID_STEAL_CAP = 500;
 
 export type SpinPackId = "spins_20" | "spins_60" | "spins_250";
 export const SPIN_PACKS: { id: SpinPackId; ton: number; spins: number; tag?: string }[] = [
@@ -18,14 +18,14 @@ export function findSpinPack(id: string) {
 
 export type Segment = "coins" | "jackpot_coins" | "shield" | "raid" | "key" | "vault";
 export const WHEEL: { seg: Exclude<Segment, "vault">; label: string }[] = [
-  { seg: "coins", label: "1K" },
+  { seg: "coins", label: "10" },
   { seg: "raid", label: "غارة" },
   { seg: "key", label: "مفتاح" },
   { seg: "shield", label: "درع" },
-  { seg: "jackpot_coins", label: "5K" },
+  { seg: "jackpot_coins", label: "50" },
   { seg: "raid", label: "غارة" },
   { seg: "key", label: "مفتاح" },
-  { seg: "coins", label: "1K" },
+  { seg: "coins", label: "10" },
 ];
 
 /** Free spins regained since `at`: +1 per hour, never above the free cap. Paid spins above the cap are kept. */

@@ -11,8 +11,8 @@ describe("raid rules", () => {
     expect(regenSpins(60, new Date(0), new Date())).toBe(60);
   });
   it("raid takes 10% capped at 50,000", () => {
-    expect(raidSteal(20_000)).toBe(2_000);
-    expect(raidSteal(10_000_000)).toBe(50_000);
+    expect(raidSteal(2_000)).toBe(200);
+    expect(raidSteal(10_000_000)).toBe(500);
   });
   it("spin packs cost 0.5 / 1 / 3 TON", () => {
     expect(findSpinPack("spins_20")).toMatchObject({ ton: 0.5, spins: 20 });
