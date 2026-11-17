@@ -75,7 +75,7 @@ export function HeroesPage() {
   });
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md px-4 pb-28 pt-4">
+    <main className="mx-auto min-h-dvh max-w-md px-4 pb-28 [--main-pt:1rem]">
       {/* Title + balance */}
       <header className="flex items-start justify-between gap-3">
         <div>

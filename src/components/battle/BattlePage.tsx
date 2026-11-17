@@ -75,7 +75,7 @@ export function BattlePage() {
       <div className="battle-shade absolute inset-0" />
 
       {/* Storage header */}
-      <header className="glass absolute inset-x-3 top-3 z-10 rounded-[26px] p-4">
+      <header className="glass absolute inset-x-3 top-[calc(var(--tg-safe-top,0px)+0.75rem)] z-10 rounded-[26px] p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs text-muted-foreground">غنايم المعركة</p>

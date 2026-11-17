@@ -149,7 +149,7 @@ export function StoryOnboarding({ onConnected }: { onConnected?: (address: strin
       </div>
 
       {/* Progress bars */}
-      <div className="absolute inset-x-4 top-[max(0.875rem,env(safe-area-inset-top))] z-20 flex gap-1.5">
+      <div className="absolute inset-x-4 top-[calc(var(--tg-safe-top,0px)+0.875rem)] z-20 flex gap-1.5">
         {STORY_SLIDES.map((_, i) => (
           <div key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-foreground/25">
             {i < index && <div className="h-full w-full rounded-full bg-foreground" />}

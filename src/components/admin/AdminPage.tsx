@@ -31,7 +31,7 @@ export function AdminPage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="mx-auto max-w-md space-y-4 px-4 pb-32 pt-6">
+    <main className="mx-auto max-w-md space-y-4 px-4 pb-32 [--main-pt:1.5rem]">
       <h1 className="text-2xl font-bold">لوحة الإدارة</h1>
       {children}
     </main>

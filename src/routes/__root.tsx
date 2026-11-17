@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { rememberPage } from "@/lib/last-page";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -136,6 +137,11 @@ type TgFull = {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    rememberPage(router.state.location.pathname);
+    return router.subscribe("onResolved", (e) => rememberPage(e.toLocation.pathname));
+  }, [router]);
   useEffect(() => {
     // Open as a full-screen Telegram app and keep content below Telegram's own buttons.
     const tg = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp;

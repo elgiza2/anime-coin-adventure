@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { lastPage } from "@/lib/last-page";
 
 import { StoryOnboarding } from "@/components/onboarding/StoryOnboarding";
 
@@ -17,5 +19,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
+  const [checked, setChecked] = useState(false);
+  useEffect(() => {
+    const p = lastPage();
+    if (p) navigate({ to: p as "/tasks", replace: true });
+    else setChecked(true);
+  }, [navigate]);
+  if (!checked) return <main className="h-dvh bg-background" />;
   return <StoryOnboarding />;
 }

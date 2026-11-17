@@ -132,8 +132,17 @@
     border-color: var(--color-border);
   }
 
+  html {
+    background-color: var(--color-background);
+  }
+
+  /* Each page paints its own background under Telegram's top buttons,
+     so the safe area matches the page and full-height pages never scroll. */
+  main {
+    padding-top: calc(var(--tg-safe-top, 0px) + var(--main-pt, 0px));
+  }
+
   body {
-    padding-top: var(--tg-safe-top, 0px);
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);

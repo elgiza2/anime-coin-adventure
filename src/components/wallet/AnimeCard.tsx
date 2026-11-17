@@ -75,7 +75,7 @@ export function AnimeCard({ initData, address }: { initData: string; address: st
       <h3 className="font-extrabold">السحب</h3>
       <p className="mt-1 text-xs text-muted-foreground">أقل سحب {formatAmount(ANIME_MIN_WITHDRAW)} ANIME، والسحب بيفتح بعد 30 يوم من دخولك.{left ? ` فاضل ${left} يوم.` : ""}</p>
       <Input dir="ltr" className="mt-3" placeholder={address ? "محفظتك المربوطة (أو اكتب عنوان تاني)" : "عنوان محفظة TON"} value={to} onChange={(e) => setTo(e.target.value)} />
-      <Input dir="ltr" type="number" className="mt-2" placeholder="1000" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <Input dir="ltr" type="number" className="mt-2" placeholder="10000" value={amount} onChange={(e) => setAmount(e.target.value)} />
       <Button variant="outline" className="mt-3 w-full rounded-xl"
         disabled={!d || wd.isPending || !canWithdraw(d.balance, d.joinedAt, now) || Number(amount) < ANIME_MIN_WITHDRAW || Number(amount) > d.balance || (!to.trim() && !address)}
         onClick={() => wd.mutate()}>اطلب السحب</Button>

@@ -33,7 +33,7 @@ export const claimAnime = createServerFn({ method: "POST" })
   });
 
 export const withdrawAnime = createServerFn({ method: "POST" })
-  .inputValidator((i: unknown) => auth.extend({ amount: z.number().min(1000).max(1e9), address: z.string().trim().min(20).max(128) }).parse(i))
+  .inputValidator((i: unknown) => auth.extend({ amount: z.number().min(10_000).max(1e9), address: z.string().trim().min(20).max(128) }).parse(i))
   .handler(async ({ data }) => {
     const { user, db } = await authPlayer(data.initData);
     const { error } = await db.rpc("wall_anime_withdraw" as never, { _tg: user.id, _amount: data.amount, _address: data.address } as never);
