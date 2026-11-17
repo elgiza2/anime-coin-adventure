@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { lastPage } from "@/lib/last-page";
+import { lastPageAsync } from "@/lib/last-page";
 
 import { StoryOnboarding } from "@/components/onboarding/StoryOnboarding";
 
@@ -22,9 +22,13 @@ function Index() {
   const navigate = useNavigate();
   const [checked, setChecked] = useState(false);
   useEffect(() => {
-    const p = lastPage();
-    if (p) navigate({ to: p as "/tasks", replace: true });
-    else setChecked(true);
+    let live = true;
+    lastPageAsync().then((p) => {
+      if (!live) return;
+      if (p) navigate({ to: p as "/tasks", replace: true });
+      else setChecked(true);
+    });
+    return () => { live = false; };
   }, [navigate]);
   if (!checked) return <main className="h-dvh bg-background" />;
   return <StoryOnboarding />;
