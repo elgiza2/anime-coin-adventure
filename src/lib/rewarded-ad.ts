@@ -1,24 +1,27 @@
-// Rewarded ad. Uses Adsgram when VITE_ADSGRAM_BLOCK_ID is set; otherwise a 15s placeholder countdown.
-type AdsgramCtl = { show: () => Promise<{ done: boolean }> };
-declare global { interface Window { Adsgram?: { init: (o: { blockId: string }) => AdsgramCtl } } }
-
-const BLOCK = import.meta.env["VITE_ADSGRAM_BLOCK_ID"] as string | undefined;
+// Rewarded ad via Monetag (zone below is a public id). Loaded lazily in the browser only.
+const ZONE = "12281067";
+const FN = `show_${ZONE}`;
 export const AD_PLACEHOLDER_SECONDS = 15;
-export const hasRealAds = !!BLOCK;
+export const hasRealAds = true;
 
-async function loadAdsgram() {
-  if (window.Adsgram) return window.Adsgram;
+type ShowFn = (o?: unknown) => Promise<void>;
+function getFn() { return (window as unknown as Record<string, ShowFn | undefined>)[FN]; }
+
+async function loadSdk() {
+  if (getFn()) return getFn()!;
   await new Promise<void>((ok, bad) => {
     const s = document.createElement("script");
-    s.src = "https://sad.adsgram.ai/js/sad.min.js";
+    s.src = "https://libtl.com/sdk.js";
+    s.dataset["zone"] = ZONE; s.dataset["sdk"] = FN;
     s.onload = () => ok(); s.onerror = () => bad(new Error("ad_load"));
     document.head.appendChild(s);
   });
-  return window.Adsgram!;
+  for (let i = 0; i < 20 && !getFn(); i++) await new Promise((r) => setTimeout(r, 150));
+  if (!getFn()) throw new Error("ad_load");
+  return getFn()!;
 }
 
-/** Resolves true only when the ad was watched to the end. */
+/** Resolves true only when the rewarded ad was watched to the end. */
 export async function showRealAd(): Promise<boolean> {
-  const sdk = await loadAdsgram();
-  try { return (await sdk.init({ blockId: BLOCK! }).show()).done; } catch { return false; }
+  try { await (await loadSdk())(); return true; } catch { return false; }
 }
