@@ -60,6 +60,7 @@ export function shopErrorMessage(e: unknown): string {
   if (m.includes("sold_out")) return "خلصت كل النسخ";
   if (m.includes("no_tries")) return "خلصت محاولاتك، اشتري محاولات أو ارجع بكرة";
   if (m.includes("already_solved")) return "إنت حليت لغز النهارده خلاص";
+  if (m.includes("already_played")) return "خلصت حلقة النهارده، ارجع بكرة";
   if (m.includes("already_used")) return "استخدمت العنصر ده خلاص";
   if (m.includes("no_item")) return "معندكش العنصر ده، اشتريه الأول";
   if (m.includes("not_found_yet")) return "لسه الدفعة موصلتش، استنى دقيقة وجرب تاني";

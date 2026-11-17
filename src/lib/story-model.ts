@@ -6,10 +6,11 @@ export const COMMUNITY_URL = "https://t.me/micahub";
 /** Chapters rotate daily starting from this date (UTC). */
 export const STORY_EPOCH = Date.UTC(2026, 0, 1);
 
-export type StoryItemId = "story_hint" | "story_letter" | "story_tries_3";
+export type StoryItemId = "story_hint" | "story_letter" | "story_tries_3" | "story_blade";
 export const STORY_ITEMS: { id: StoryItemId; ton: number; label: string; desc: string }[] = [
   { id: "story_hint", ton: 0.2, label: "تلميح", desc: "يكشف تلميح لغز النهارده" },
   { id: "story_letter", ton: 0.3, label: "كشف حرف", desc: "يظهر حرف من الإجابة" },
+  { id: "story_blade", ton: 0.4, label: "سيف الرعد", desc: "يفتح الاختيار السري في القصة" },
   { id: "story_tries_3", ton: 0.5, label: "3 محاولات", desc: "محاولات زيادة بعد ما تخلص" },
 ];
 export function findStoryItem(id: string) {

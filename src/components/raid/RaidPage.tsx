@@ -17,6 +17,7 @@ import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import { StarField } from "@/components/nft/NftIntro";
 import { StoryGame } from "@/components/story/StoryGame";
+import { AnimeNovel } from "@/components/story/AnimeNovel";
 
 function resultText(r: SpinResult): string {
   switch (r.segment) {
@@ -91,6 +92,7 @@ export function RaidPage() {
       <h1 className="font-display text-2xl font-extrabold">حكايات السور</h1>
     </header>
 
+    <AnimeNovel initData={initData} />
     <StoryGame initData={initData} />
 
     <h2 className="relative z-10 mx-4 mt-8 font-display text-xl font-extrabold">عجلة الغارات</h2>

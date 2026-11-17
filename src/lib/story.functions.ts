@@ -19,7 +19,7 @@ export const getStory = createServerFn({ method: "POST" })
       db.from("wall_story_state" as never).select("extra_tries, hints, letters").eq("tg_id", user.id).maybeSingle(),
       db.from("wall_story_attempts" as never).select("tries, solved, solved_rank, hint_used, letters_shown").eq("tg_id", user.id).eq("day", day).maybeSingle(),
       db.from("wall_story_attempts" as never).select("tg_id", { count: "exact", head: true }).eq("day", day).eq("solved", true),
-      db.from("wall_payments").select("id").eq("tg_id", user.id).in("pack", ["story_hint", "story_letter", "story_tries_3"]).eq("status", "pending").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      db.from("wall_payments").select("id").eq("tg_id", user.id).in("pack", ["story_hint", "story_letter", "story_tries_3", "story_blade"]).eq("status", "pending").order("created_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
     if (c.error) throw new Error(c.error.message);
     const chap = c.data as unknown as { title: string; story: string; riddle: string; hint: string; answer_norm: string; reward: number; image_key: string };
@@ -53,4 +53,27 @@ export const spendStoryItem = createServerFn({ method: "POST" })
     const r = await db.rpc("wall_story_use" as never, { _tg: user.id, _item: data.item } as never);
     if (r.error) throw new Error(r.error.message);
     return { ok: true };
+  });
+
+/** Today's novel progress: has the player finished, and how many blades they own. */
+export const getNovel = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => authInput.parse(d))
+  .handler(async ({ data }) => {
+    const { user, db } = await authPlayer(data.initData);
+    const day = new Date().toISOString().slice(0, 10);
+    const [run, st] = await Promise.all([
+      db.from("wall_novel_runs" as never).select("ending, coins").eq("tg_id", user.id).eq("day", day).maybeSingle(),
+      db.from("wall_story_state" as never).select("blades").eq("tg_id", user.id).maybeSingle(),
+    ]);
+    const r = run.data as unknown as { ending: string; coins: number } | null;
+    return { ending: r?.ending ?? null, coins: r ? Number(r.coins) : 0, blades: Number((st.data as unknown as { blades: number } | null)?.blades ?? 0) };
+  });
+
+export const finishNovel = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => authInput.extend({ ending: z.enum(["fall", "escape", "hero", "legend"]) }).parse(d))
+  .handler(async ({ data }) => {
+    const { user, db } = await authPlayer(data.initData);
+    const r = await db.rpc("wall_novel_finish" as never, { _tg: user.id, _ending: data.ending } as never);
+    if (r.error) throw new Error(r.error.message);
+    return { coins: Number((r.data as unknown as { coins: number }).coins) };
   });

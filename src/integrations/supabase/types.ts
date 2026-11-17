@@ -4439,6 +4439,30 @@ export type Database = {
           },
         ]
       }
+      wall_novel_runs: {
+        Row: {
+          coins: number
+          created_at: string
+          day: string
+          ending: string
+          tg_id: number
+        }
+        Insert: {
+          coins: number
+          created_at?: string
+          day?: string
+          ending: string
+          tg_id: number
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          day?: string
+          ending?: string
+          tg_id?: number
+        }
+        Relationships: []
+      }
       wall_payments: {
         Row: {
           amount_nano: number
@@ -4630,6 +4654,7 @@ export type Database = {
       }
       wall_story_state: {
         Row: {
+          blades: number
           created_at: string
           extra_tries: number
           hints: number
@@ -4637,6 +4662,7 @@ export type Database = {
           tg_id: number
         }
         Insert: {
+          blades?: number
           created_at?: string
           extra_tries?: number
           hints?: number
@@ -4644,6 +4670,7 @@ export type Database = {
           tg_id: number
         }
         Update: {
+          blades?: number
           created_at?: string
           extra_tries?: number
           hints?: number
@@ -5213,6 +5240,10 @@ export type Database = {
         }[]
       }
       wall_nft_roll: { Args: { _r: number }; Returns: number }
+      wall_novel_finish: {
+        Args: { _ending: string; _tg: number }
+        Returns: Json
+      }
       wall_raid_load: {
         Args: { _tg: number }
         Returns: {

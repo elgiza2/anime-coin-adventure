@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Lightbulb, Send, Type, Users } from "lucide-react";
+import { Lightbulb, Send, Type, Users, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -136,9 +136,9 @@ export function StoryGame({ initData }: { initData: string }) {
     {/* Item shop */}
     <div>
       <h2 className="mb-2 font-display text-lg font-extrabold">متجر الكشاف</h2>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {STORY_ITEMS.map((it) => <button key={it.id} type="button" disabled={busy} onClick={() => buy(it.id)} className="glass flex flex-col items-center gap-1 rounded-2xl p-3 text-center disabled:opacity-60">
-          {it.id === "story_hint" ? <Lightbulb className="size-7 text-accent" /> : it.id === "story_letter" ? <Type className="size-7 text-accent" /> : <Send className="size-7 text-accent" />}
+          {it.id === "story_hint" ? <Lightbulb className="size-7 text-accent" /> : it.id === "story_letter" ? <Type className="size-7 text-accent" /> : it.id === "story_blade" ? <Zap className="size-7 text-accent" /> : <Send className="size-7 text-accent" />}
           <span className="font-display text-sm font-extrabold">{it.label}</span>
           <span className="text-[0.65rem] leading-4 text-foreground/70">{it.desc}</span>
           <span dir="ltr" className="text-sm font-extrabold text-accent">{it.ton} TON</span>
