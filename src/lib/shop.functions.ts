@@ -90,6 +90,8 @@ export const checkTonPayment = createServerFn({ method: "POST" })
     if (!tx) throw new Error("not_found_yet");
     const { data: coins, error: e2 } = await db.rpc("wall_confirm_payment", { _id: p.id, _tx: tx.hash } as never);
     if (e2) throw new Error(e2.message);
+    const { notifyOwnersOfPayment } = await import("./admin-notify.server");
+    await notifyOwnersOfPayment(db as never, p);
     const nft = await mintedFor();
     return { coins: Number(coins), paid: true, nft, refund: p.pack === "nft_mint" && !nft };
   });

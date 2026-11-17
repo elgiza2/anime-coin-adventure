@@ -4285,6 +4285,24 @@ export type Database = {
           },
         ]
       }
+      wall_admins: {
+        Row: {
+          created_at: string
+          role: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          role: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          role?: string
+          username?: string
+        }
+        Relationships: []
+      }
       wall_anime: {
         Row: {
           balance: number
