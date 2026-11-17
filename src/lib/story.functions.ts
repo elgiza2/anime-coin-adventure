@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { pickKey, sagaChapter, type SagaState } from "./saga";
 import { authPlayer } from "./tasks.functions";
 import { maskAnswer, type StoryGuess, type StoryState } from "./story-model";
 
@@ -66,12 +67,14 @@ export const getNovel = createServerFn({ method: "POST" })
       db.from("wall_story_state" as never).select("blades").eq("tg_id", user.id).maybeSingle(),
       db.from("wall_users").select("balance").eq("tg_id", user.id).maybeSingle(),
     ]);
+    const sg = await db.from("wall_novel_progress" as never).select("story").eq("tg_id", user.id).maybeSingle();
     const p = r.data as unknown as { chapter: number; step: number; hearts: number; plays_used: number; ads_used: number; bonus_plays: number; wins: number; losses: number };
     return {
       chapter: p.chapter, step: p.step, hearts: p.hearts, playsUsed: p.plays_used, adsUsed: p.ads_used, bonus: p.bonus_plays,
       wins: p.wins, losses: p.losses,
       blades: Number((st.data as unknown as { blades: number } | null)?.blades ?? 0),
       balance: Number((u.data as unknown as { balance: number } | null)?.balance ?? 0),
+      story: ((sg.data as unknown as { story: SagaState } | null)?.story ?? {}) as SagaState,
     };
   });
 
@@ -92,4 +95,31 @@ export const novelAdReward = createServerFn({ method: "POST" })
     const r = await db.rpc("wall_novel_ad" as never, { _tg: user.id } as never);
     if (r.error) throw new Error(r.error.message);
     return { ok: true };
+  });
+
+/** Saves the hero setup or this chapter's story choice. Choices are final and only for the current chapter. */
+export const saveSaga = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => authInput.extend({
+    path: z.enum(["scout", "guard", "shadow"]).optional(),
+    bond: z.enum(["mikasa", "levi", "armin"]).optional(),
+    pick: z.number().int().min(0).max(2).optional(),
+  }).parse(d))
+  .handler(async ({ data }) => {
+    const { user, db } = await authPlayer(data.initData);
+    const r = await db.rpc("wall_novel_row" as never, { _tg: user.id } as never);
+    if (r.error) throw new Error(r.error.message);
+    const row = r.data as unknown as { chapter: number; story?: SagaState };
+    const cur = await db.from("wall_novel_progress" as never).select("story").eq("tg_id", user.id).maybeSingle();
+    const st: SagaState = { ...((cur.data as unknown as { story: SagaState } | null)?.story ?? {}) };
+    if (data.path && !st.path) st.path = data.path;
+    if (data.bond && !st.bond) st.bond = data.bond;
+    if (data.pick !== undefined) {
+      const key = pickKey(row.chapter);
+      if (data.pick >= sagaChapter(row.chapter).ch.options.length) throw new Error("bad_pick");
+      st.picks = { ...(st.picks ?? {}) };
+      if (st.picks[key] === undefined) st.picks[key] = data.pick;
+    }
+    const { error } = await db.from("wall_novel_progress" as never).update({ story: st } as never).eq("tg_id", user.id);
+    if (error) throw new Error(error.message);
+    return st;
   });

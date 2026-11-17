@@ -4562,6 +4562,7 @@ export type Database = {
           losses: number
           plays_used: number
           step: number
+          story: Json
           tg_id: number
           updated_at: string
           wins: number
@@ -4575,6 +4576,7 @@ export type Database = {
           losses?: number
           plays_used?: number
           step?: number
+          story?: Json
           tg_id: number
           updated_at?: string
           wins?: number
@@ -4588,6 +4590,7 @@ export type Database = {
           losses?: number
           plays_used?: number
           step?: number
+          story?: Json
           tg_id?: number
           updated_at?: string
           wins?: number
@@ -5463,6 +5466,7 @@ export type Database = {
           losses: number
           plays_used: number
           step: number
+          story: Json
           tg_id: number
           updated_at: string
           wins: number

@@ -6,21 +6,30 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { COIN, formatAmount } from "@/lib/coin";
-import { AD_PLAYS_MAX, BLADE_ITEM, encounter, MAX_HEARTS, PLAYS_PACK, playsLeft, stepReward, STEPS_PER_CHAPTER, winChance, type Risk } from "@/lib/novel-model";
-import { getNovel, novelAdReward, playNovel } from "@/lib/story.functions";
+import { AD_PLAYS_MAX, BLADE_ITEM, MAX_HEARTS, PLAYS_PACK, playsLeft, stepReward, STEPS_PER_CHAPTER, winChance, type Risk } from "@/lib/novel-model";
+import { getNovel, novelAdReward, playNovel, saveSaga } from "@/lib/story.functions";
+import { BONDS, hasPicked, PATHS, sagaAsk, sagaChapter, sagaLines, type Bond, type Path, type SagaState } from "@/lib/saga";
 import { checkTonPayment, createTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
 import { findStoryItem } from "@/lib/story-model";
 import { AD_PLACEHOLDER_SECONDS, hasRealAds, showRealAd } from "@/lib/rewarded-ad";
-import { haptic } from "@/lib/telegram";
+import { haptic, telegramDisplayName } from "@/lib/telegram";
 import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import dawn from "@/assets/story/chapter-dawn.jpg";
 import forest from "@/assets/story/chapter-forest.jpg";
 import tunnel from "@/assets/story/chapter-tunnel.jpg";
 import vault from "@/assets/story/chapter-vault.jpg";
+import camp from "@/assets/story/saga-camp.jpg";
+import village from "@/assets/story/saga-village.jpg";
+import capital from "@/assets/story/saga-capital.jpg";
+import moon from "@/assets/story/saga-moon.jpg";
+import snow from "@/assets/story/saga-snow.jpg";
+import ride from "@/assets/story/saga-ride.jpg";
+import sea from "@/assets/story/saga-sea.jpg";
+import war from "@/assets/story/saga-war.jpg";
 
-const ART = { dawn, forest, tunnel, vault };
+const ART = { dawn, forest, tunnel, vault, camp, village, capital, moon, snow, ride, sea, war };
 const EMBERS = Array.from({ length: 14 }, (_, i) => ({ left: `${(i * 37) % 100}%`, delay: `${(i * 0.7) % 6}s`, dur: `${6 + (i % 5)}s` }));
 type Result = { win: boolean; coins: number; penalty: number; cleared: boolean };
 
@@ -45,15 +54,28 @@ export function AnimeNovel({ initData }: { initData: string }) {
   const createFn = useServerFn(createTonPayment);
   const checkFn = useServerFn(checkTonPayment);
   const q = useQuery({ queryKey: ["wall-novel", initData], queryFn: () => stateFn({ data: { initData } }), enabled: !!initData });
-  const s = q.data ?? { chapter: 1, step: 1, hearts: MAX_HEARTS, playsUsed: 0, adsUsed: 0, bonus: 0, blades: 0, balance: 0, wins: 0, losses: 0 };
-  const enc = encounter(s.chapter, s.step);
-  const cur = enc.lines[line] ?? enc.lines[0]!;
-  const lastLine = line >= enc.lines.length - 1;
+  const s = q.data ?? { chapter: 1, step: 1, hearts: MAX_HEARTS, playsUsed: 0, adsUsed: 0, bonus: 0, blades: 0, balance: 0, wins: 0, losses: 0, story: {} as SagaState };
+  const sagaFn = useServerFn(saveSaga);
+  const [story, setStory] = useState<SagaState>({});
+  const [reply, setReply] = useState<string | null>(null);
+  const [draft, setDraft] = useState<{ path?: Path; bond?: Bond }>({});
+  useEffect(() => { if (q.data) setStory(q.data.story); }, [q.data]);
+  const name = telegramDisplayName() || "المجند";
+  const { ch, season } = sagaChapter(s.chapter);
+  const needsHero = !!q.data && (!story.path || !story.bond);
+  const choosing = s.step === 1 && !hasPicked(s.chapter, story) && !reply;
+  const storyLines = s.step === 1 ? sagaLines(s.chapter, story, name)
+    : [{ who: "الراوي", text: `الجولة ${s.step} من ${STEPS_PER_CHAPTER}: ${s.step >= STEPS_PER_CHAPTER ? `${ch.foe} — الزعيم` : `حرس ${ch.foe}`} قدامك.` }];
+  const lines = reply ? [{ who: "الراوي", text: reply }] : storyLines;
+  const enc = { title: `${season > 1 ? `الدورة ${season} · ` : ""}${ch.act} — ${ch.title}`, art: ch.art };
+  const ask = sagaAsk(s.chapter, story, name);
+  const cur = lines[line] ?? lines[0]!;
+  const lastLine = line >= lines.length - 1;
   const tw = useTypewriter(cur.text);
   const left = playsLeft(s);
   const outOfPlays = left < 1;
   const blade = findStoryItem(BLADE_ITEM)!;
-  const sceneKey = `${s.chapter}-${s.step}`;
+  const sceneKey = `${s.chapter}-${s.step}-${reply ? "r" : ""}`;
 
   useEffect(() => { setLine(0); }, [sceneKey]);
   useEffect(() => {
@@ -108,14 +130,27 @@ export function AnimeNovel({ initData }: { initData: string }) {
     catch (e) { toast.error(shopErrorMessage(e)); }
   }
 
-  async function continueAfter() { setResult(null); await q.refetch(); }
+  async function continueAfter() { setResult(null); setReply(null); await q.refetch(); }
+
+  async function saveHero() {
+    if (!initData) { toast("افتح اللعبة من تيليجرام"); return; }
+    setBusy(true);
+    try { setStory(await sagaFn({ data: { initData, ...draft } })); haptic("success"); }
+    catch (e) { toast.error(shopErrorMessage(e)); } finally { setBusy(false); }
+  }
+  async function pick(i: number) {
+    if (!initData) { toast("افتح اللعبة من تيليجرام"); return; }
+    setBusy(true);
+    try { const st = await sagaFn({ data: { initData, pick: i } }); setStory(st); setReply(ask.options[i]!.reply); haptic("success"); }
+    catch (e) { toast.error(shopErrorMessage(e)); } finally { setBusy(false); }
+  }
 
   const choices: { risk: Risk; label: string }[] = [
-    { risk: "safe", label: enc.arc.moves[0] }, { risk: "bold", label: enc.arc.moves[1] }, { risk: "reckless", label: enc.arc.moves[2] },
+    { risk: "safe", label: ch.moves[0] }, { risk: "bold", label: ch.moves[1] }, { risk: "reckless", label: ch.moves[2] },
   ];
 
   return <section className="absolute inset-0 overflow-hidden">
-    <div key={sceneKey} className="absolute inset-0"><img src={ART[enc.arc.art]} alt="" className="vn-bg h-full w-full object-cover" /></div>
+    <div key={sceneKey} className="absolute inset-0"><img src={ART[enc.art]} alt="" className="vn-bg h-full w-full object-cover" /></div>
     <div key={`f-${sceneKey}`} className="vn-flash absolute inset-0" />
     <div className="vn-shade absolute inset-0" />
     {EMBERS.map((e, i) => <span key={i} className="vn-ember" style={{ left: e.left, animationDelay: e.delay, animationDuration: e.dur }} />)}
@@ -149,13 +184,41 @@ export function AnimeNovel({ initData }: { initData: string }) {
             : <p className="mt-1 text-sm text-foreground/80">خسرت قلب — لو القلوب خلصت هتتعاقب</p>)}
           <Button onClick={continueAfter} className="btn-cta mt-4 h-12 w-full rounded-2xl font-extrabold">كمل <ChevronLeft className="size-4" /></Button>
         </div>
+      ) : needsHero ? (
+        <div className="vn-pop glass max-h-[62dvh] space-y-3 overflow-y-auto rounded-3xl p-4">
+          <p className="text-center font-display text-xl font-extrabold">ابني بطلك يا {name}</p>
+          <p className="text-center text-xs text-foreground/70">اختياراتك هتفضل معاك طول القصة</p>
+          <p className="text-sm font-bold">طريقك</p>
+          {(Object.keys(PATHS) as Path[]).map((k) => (
+            <button key={k} type="button" onClick={() => setDraft({ ...draft, path: k })}
+              className={cn("block w-full rounded-2xl border p-3 text-right transition-colors", draft.path === k ? "border-accent bg-accent/15" : "border-border bg-muted/30")}>
+              <span className="font-extrabold">{PATHS[k].label}</span><span className="block text-xs text-foreground/70">{PATHS[k].desc}</span>
+            </button>
+          ))}
+          <p className="text-sm font-bold">رفيقك في الرحلة</p>
+          {(Object.keys(BONDS) as Bond[]).map((k) => (
+            <button key={k} type="button" onClick={() => setDraft({ ...draft, bond: k })}
+              className={cn("block w-full rounded-2xl border p-3 text-right transition-colors", draft.bond === k ? "border-accent bg-accent/15" : "border-border bg-muted/30")}>
+              <span className="font-extrabold">{BONDS[k].label}</span><span className="block text-xs text-foreground/70">{BONDS[k].desc}</span>
+            </button>
+          ))}
+          <Button disabled={busy || !draft.path || !draft.bond} onClick={saveHero} className="btn-cta h-12 w-full rounded-2xl font-extrabold">ابدأ القصة</Button>
+        </div>
       ) : <>
         <button type="button" onClick={next} className="glass block min-h-28 w-full rounded-3xl p-4 text-right">
           <span key={`${sceneKey}-${line}-w`} className="vn-pop mb-2 inline-block rounded-full bg-primary px-3 py-0.5 text-xs font-extrabold text-primary-foreground">{cur.who}</span>
           <p className={cn("font-display text-lg font-bold leading-8", !tw.done && "vn-caret")}>{tw.shown}</p>
           {tw.done && !lastLine && <span className="vn-rise mt-1 flex items-center justify-end gap-1 text-xs text-foreground/70">اضغط للي بعده <ChevronLeft className="size-3.5" /></span>}
         </button>
-        {lastLine && tw.done && (outOfPlays ? (
+        {lastLine && tw.done && choosing ? (
+          <div className="vn-rise space-y-2">
+            <p className="glass rounded-2xl px-4 py-2 text-center text-sm font-bold">{ask.ask}</p>
+            {ask.options.map((o, i) => (
+              <Button key={i} disabled={busy} onClick={() => pick(i)} style={{ animationDelay: `${i * 90}ms` }} variant="secondary"
+                className="vn-rise h-auto w-full justify-center rounded-2xl py-3 font-extrabold">{o.label}</Button>
+            ))}
+          </div>
+        ) : lastLine && tw.done && (outOfPlays ? (
           <div className="vn-rise glass space-y-2 rounded-3xl p-4 text-center">
             <p className="font-display font-extrabold">خلصت لعبات النهارده</p>
             <Button disabled={busy || s.adsUsed >= AD_PLAYS_MAX} onClick={startAd} variant="secondary" className="h-12 w-full rounded-2xl font-extrabold">
