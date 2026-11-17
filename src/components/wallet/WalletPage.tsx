@@ -14,6 +14,7 @@ import { getMyBoard, saveWallet } from "@/lib/tasks.functions";
 import { getInitData } from "@/lib/telegram";
 import { getTonConnect, shortTonAddress } from "@/lib/ton-connect";
 import vaultImage from "@/assets/onboarding/v3-2-mine.jpg";
+import { AnimeCard } from "./AnimeCard";
 import { MinePassCard } from "@/components/profile/MinePassCard";
 
 export function WalletPage() {
@@ -129,10 +130,7 @@ export function WalletPage() {
           <AnimatedEmoji name="gem" className="size-10" />
         </Button>
       </section>
-      <section className="mt-6 border-b border-border pb-5">
-        <h2 className="mb-3 text-xl font-extrabold">السحب</h2>
-        <div className="flex items-center justify-between gap-3"><span className="text-sm text-muted-foreground">عملات اللعبة داخل التطبيق</span><span className="text-xs text-muted-foreground">غير متاح حاليًا</span></div>
-      </section>
+      <AnimeCard initData={initData} address={address} />
 
       <section className="mt-6">
         <h2 className="mb-3 text-xl font-extrabold">مكافآت الحامية</h2>

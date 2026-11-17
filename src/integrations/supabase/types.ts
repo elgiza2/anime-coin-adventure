@@ -4285,6 +4285,32 @@ export type Database = {
           },
         ]
       }
+      wall_anime: {
+        Row: {
+          balance: number
+          claimed_at: string | null
+          tg_id: number
+        }
+        Insert: {
+          balance?: number
+          claimed_at?: string | null
+          tg_id: number
+        }
+        Update: {
+          balance?: number
+          claimed_at?: string | null
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_anime_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       wall_checkins: {
         Row: {
           created_at: string
@@ -4891,6 +4917,41 @@ export type Database = {
         }
         Relationships: []
       }
+      wall_withdrawals: {
+        Row: {
+          address: string
+          amount: number
+          created_at: string
+          id: string
+          status: string
+          tg_id: number
+        }
+        Insert: {
+          address: string
+          amount: number
+          created_at?: string
+          id?: string
+          status?: string
+          tg_id: number
+        }
+        Update: {
+          address?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          status?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_withdrawals_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       withdrawals: {
         Row: {
           address: string
@@ -5252,6 +5313,11 @@ export type Database = {
         Returns: undefined
       }
       wall_ad_reward: { Args: { _tg: number }; Returns: number }
+      wall_anime_claim: { Args: { _tg: number }; Returns: number }
+      wall_anime_withdraw: {
+        Args: { _address: string; _amount: number; _tg: number }
+        Returns: string
+      }
       wall_claim_task: {
         Args: { _task: string; _tg: number; _verified: boolean }
         Returns: number
