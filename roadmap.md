@@ -2,6 +2,8 @@
 
 - [ ] Add Telegram bot key (TELEGRAM_BOT_TOKEN) — on hold, owner wants design first
 - [x] Mine Pass as a collectible art card with each player's unique number
+- [ ] Battle page: remove hero strip and watch-ad button; pass card text laid out cleanly underneath
+- [ ] NFT page + button on battle page: intro video (Mikasa says "time for war" in Korean, camera rushes ground→sky→stars, stops), then NFT card with Mint (5 TON assumed), random NFT per mint
 - [ ] More design changes — waiting for owner's direction
 
 - [x] Mandatory Mine Pass: 0.05 TON, confirmed payment, unique number, verification badge and mining gate; actual wallet transfer requires Telegram and a funded TON wallet
