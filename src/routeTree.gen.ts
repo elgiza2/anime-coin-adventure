@@ -21,6 +21,7 @@ import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
 import { Route as ApiPublicTelegramCoverRouteImport } from './routes/api/public/telegram/cover'
+import { Route as ApiPublicTelegramDailyRouteImport } from './routes/api/public/telegram/daily'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -84,6 +85,11 @@ const ApiPublicTelegramCoverRoute = ApiPublicTelegramCoverRouteImport.update({
   path: '/api/public/telegram/cover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTelegramDailyRoute = ApiPublicTelegramDailyRouteImport.update({
+  id: '/api/public/telegram/daily',
+  path: '/api/public/telegram/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTelegramWebhookRoute =
   ApiPublicTelegramWebhookRouteImport.update({
     id: '/api/public/telegram/webhook',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
   '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
+  '/api/public/telegram/daily': typeof ApiPublicTelegramDailyRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
     | '/api/public/telegram/cover'
+    | '/api/public/telegram/daily'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -198,6 +210,7 @@ export interface RootRouteChildren {
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
   ApiPublicTelegramCoverRoute: typeof ApiPublicTelegramCoverRoute
+  ApiPublicTelegramDailyRoute: typeof ApiPublicTelegramDailyRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
@@ -287,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramCoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/telegram/daily': {
+      id: '/api/public/telegram/daily'
+      path: '/api/public/telegram/daily'
+      fullPath: '/api/public/telegram/daily'
+      preLoaderRoute: typeof ApiPublicTelegramDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/telegram/webhook': {
       id: '/api/public/telegram/webhook'
       path: '/api/public/telegram/webhook'
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
   ApiPublicTelegramCoverRoute: ApiPublicTelegramCoverRoute,
+  ApiPublicTelegramDailyRoute: ApiPublicTelegramDailyRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport

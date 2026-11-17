@@ -51,6 +51,22 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const update = (await request.json().catch(() => null)) as {
           message?: { chat?: { id?: number }; text?: string; from?: { first_name?: string } };
         } | null;
+        const cb = (update as { callback_query?: { id: string; data?: string; from: { id: number } } } | null)?.callback_query;
+        if (cb?.data?.startsWith("gift:")) {
+          const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+          const { data, error } = await db.rpc("wall_claim_gift" as never, { _gift: cb.data.slice(5), _tg: cb.from.id } as never);
+          const m = error?.message ?? "";
+          const text = !error ? `🎁 +${Number(data)} coins added to your account!`
+            : m.includes("gift_claimed") ? "You already claimed this gift."
+            : m.includes("gift_expired") ? "This gift has expired. A new one comes tomorrow."
+            : m.includes("no_user") ? "Open the game once first, then claim your gift."
+            : "Something went wrong, try again.";
+          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ callback_query_id: cb.id, text, show_alert: true }),
+          });
+          return Response.json({ ok: true });
+        }
         const msg = update?.message;
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
           const chatId = msg.chat!.id;

@@ -4361,6 +4361,60 @@ export type Database = {
           },
         ]
       }
+      wall_gift_claims: {
+        Row: {
+          created_at: string
+          gift_id: string
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          gift_id: string
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          gift_id?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_gift_claims_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "wall_gifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wall_gift_claims_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_gifts: {
+        Row: {
+          amount: number
+          created_at: string
+          expires_at: string
+          id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          expires_at: string
+          id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       wall_hero_levels: {
         Row: {
           hero: number
@@ -4389,6 +4443,21 @@ export type Database = {
             referencedColumns: ["tg_id"]
           },
         ]
+      }
+      wall_jobs: {
+        Row: {
+          locked_until: string
+          name: string
+        }
+        Insert: {
+          locked_until?: string
+          name: string
+        }
+        Update: {
+          locked_until?: string
+          name?: string
+        }
+        Relationships: []
       }
       wall_mine_passes: {
         Row: {
@@ -4866,12 +4935,14 @@ export type Database = {
       wall_users: {
         Row: {
           balance: number
+          bot_blocked: boolean
           checkin_streak: number
           created_at: string
           first_name: string
           last_checkin_at: string | null
           last_seen_at: string
           mined_at: string
+          notified_slot: string | null
           photo_url: string | null
           referrer_id: number | null
           tg_id: number
@@ -4881,12 +4952,14 @@ export type Database = {
         }
         Insert: {
           balance?: number
+          bot_blocked?: boolean
           checkin_streak?: number
           created_at?: string
           first_name?: string
           last_checkin_at?: string | null
           last_seen_at?: string
           mined_at?: string
+          notified_slot?: string | null
           photo_url?: string | null
           referrer_id?: number | null
           tg_id: number
@@ -4896,12 +4969,14 @@ export type Database = {
         }
         Update: {
           balance?: number
+          bot_blocked?: boolean
           checkin_streak?: number
           created_at?: string
           first_name?: string
           last_checkin_at?: string | null
           last_seen_at?: string
           mined_at?: string
+          notified_slot?: string | null
           photo_url?: string | null
           referrer_id?: number | null
           tg_id?: number
@@ -5336,6 +5411,7 @@ export type Database = {
         Args: { _address: string; _amount: number; _tg: number }
         Returns: string
       }
+      wall_claim_gift: { Args: { _gift: string; _tg: number }; Returns: number }
       wall_claim_task: {
         Args: { _task: string; _tg: number; _verified: boolean }
         Returns: number
@@ -5353,6 +5429,10 @@ export type Database = {
       wall_hero_rate: {
         Args: { _hero: number; _level: number }
         Returns: number
+      }
+      wall_job_lock: {
+        Args: { _name: string; _seconds: number }
+        Returns: boolean
       }
       wall_mining_claim: { Args: { _tg: number }; Returns: number }
       wall_mining_rate: { Args: { _tg: number }; Returns: number }
@@ -5426,6 +5506,7 @@ export type Database = {
       wall_story_norm: { Args: { _t: string }; Returns: string }
       wall_story_today: { Args: never; Returns: number }
       wall_story_use: { Args: { _item: string; _tg: number }; Returns: Json }
+      wall_today_gift: { Args: { _amount: number }; Returns: string }
       wall_upgrade_hero: {
         Args: { _hero: number; _tg: number }
         Returns: number

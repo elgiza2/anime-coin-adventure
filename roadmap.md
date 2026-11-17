@@ -36,7 +36,7 @@
 - [x] Illustrated story game: daily chapter with artwork + riddle the community solves together in https://t.me/micahub; server-checked answers, 3 free tries/day, TON item shop (hint, reveal a letter, extra tries)
 - [x] Bot token + news channel saved; app opens full-screen with safe space under Telegram's buttons; /start message (English, bold, colored buttons)
 - [x] Admin panel at /101 (@eigiza, @torker): stats, payment alerts, task add/edit/delete, task-only sub-admins
-- [ ] Daily bot notifications + chat gifts with a claim button that credits the account
+- [x] Daily bot reminders (3/day) + daily chat gift — needs an external scheduler (cron-job.org) calling the daily link every 10 min
 - [ ] 30 English posts with new images; auto-post 2-3/day to the news channel (owner says when to start)
 - [ ] Custom emoji packs in /start — needs the bot to own a Fragment username (Telegram rule)
 - [x] Verified badge from Des_Ch_9722f_by_TgEmodziBot pack
