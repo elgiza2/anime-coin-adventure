@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Add Telegram bot key (TELEGRAM_BOT_TOKEN) — on hold, owner wants design first
+- [x] Telegram bot key added
 - [x] Mine Pass as a collectible art card with each player's unique number
 - [x] Battle page: remove hero strip and watch-ad button; pass card text laid out cleanly underneath
 - [x] NFT page + button on battle page: animated intro, then NFT card with Mint (5 TON assumed), random NFT per mint
@@ -8,7 +8,7 @@
 - [x] Owner confirmed: 5 TON per mint; wants real on-chain NFTs
 - [ ] Real TON NFTs in the player wallet — later step: needs a published NFT collection on TON and a funded minter wallet key from the owner
 - [x] Fair NFT mint: limited copies per card, 10,000 total with 9,164 already taken (836 open), live remaining counter
-- [ ] Owner makes the Mikasa video himself (prompt + start image provided); add it to the NFT intro once he uploads it
+- [x] Mikasa video added
 - [ ] More design changes — waiting for owner's direction
 
 - [x] Mandatory Mine Pass: 0.05 TON, confirmed payment, unique number, verification badge and mining gate; actual wallet transfer requires Telegram and a funded TON wallet
@@ -35,7 +35,7 @@
 - [x] Games page in the bottom navigation as "الغارات", renamed "غارات الأسوار", own nav bar; its card button removed from the battle page
 - [x] Illustrated story game: daily chapter with artwork + riddle the community solves together in https://t.me/micahub; server-checked answers, 3 free tries/day, TON item shop (hint, reveal a letter, extra tries)
 - [x] Bot token + news channel saved; app opens full-screen with safe space under Telegram's buttons; /start message (English, bold, colored buttons)
-- [ ] Admin panel at /101 (@eigiza, @torker): stats, payment alerts, task add/edit/delete, task-only sub-admins
+- [x] Admin panel at /101 (@eigiza, @torker): stats, payment alerts, task add/edit/delete, task-only sub-admins
 - [ ] Daily bot notifications + chat gifts with a claim button that credits the account
 - [ ] 30 English posts with new images; auto-post 2-3/day to the news channel (owner says when to start)
 - [ ] Custom emoji packs in /start — needs the bot to own a Fragment username (Telegram rule)
