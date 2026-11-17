@@ -1,3 +1,4 @@
+import { ANIME_EXCHANGES } from "@/lib/anime-exchanges";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -56,9 +57,17 @@ export function AnimeCard({ initData, address }: { initData: string; address: st
       </div>
       <p className="mt-2 text-xs text-muted-foreground">{p ? `1,000 ANIME ≈ $${(p.price * 1000).toFixed(2)}` : price.isError ? "تعذّر تحميل السعر" : "جارٍ تحميل السعر…"}</p>
       <div className="mt-3 border-t border-border pt-3">
-        <p className="mb-2 text-xs text-muted-foreground">مدرجة على</p>
+        <p className="mb-2 text-xs text-muted-foreground">مدرجة على {ANIME_EXCHANGES.length} منصة</p>
         <a href={BINANCE} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl bg-muted/50 px-4 py-3 font-bold">
           <span>Binance <span className="text-xs font-normal text-muted-foreground">ANIME/USDT</span></span><ExternalLink className="size-4" /></a>
+        <div dir="ltr" className="mt-2 grid max-h-64 grid-cols-2 gap-1.5 overflow-y-auto">
+          {ANIME_EXCHANGES.slice(1).map((x) => (
+            <a key={x.name} href={x.url} target="_blank" rel="noreferrer" className="rounded-xl bg-muted/30 px-3 py-2 text-start">
+              <span className="block truncate text-sm font-bold">{x.name}</span>
+              <span className="block text-[0.65rem] text-muted-foreground">{x.pair}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 
