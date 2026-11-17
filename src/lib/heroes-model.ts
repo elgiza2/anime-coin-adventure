@@ -6,12 +6,12 @@ export const STORAGE_HOURS = 3;
 
 /** Coins per hour a hero mines at a given level. */
 export function heroRate(hero: number, level: number): number {
-  return 2 ** hero * 2 * level;
+  return 2 ** hero * level;
 }
 
 /** Coin price to go from `level` to `level + 1`. */
 export function heroCost(hero: number, level: number): number {
-  return Math.round(50 * 1.035 ** level * 3 ** hero);
+  return Math.round(100 * 1.035 ** level * 3 ** hero);
 }
 
 /** A hero unlocks once the previous one reaches the max level. */

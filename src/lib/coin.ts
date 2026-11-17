@@ -1,5 +1,5 @@
 // Temporary coin identity — the final name comes from the owner later; change it here only.
-export const COIN = { symbol: "WALL", name: "عملة الأسوار" } as const;
+export const COIN = { symbol: "ANIME", name: "Animecoin" } as const;
 
 export const BOT_USERNAME = "Mixsaabot";
 
