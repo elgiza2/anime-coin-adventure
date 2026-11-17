@@ -9,10 +9,14 @@ import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import type { EmojiName } from "@/components/emoji/emoji-registry";
 import { COIN, formatAmount, referralLink } from "@/lib/coin";
 import { getInitData, haptic, openExternal, shareLink } from "@/lib/telegram";
+import { showRewardedAd } from "@/lib/monetag";
+import { claimAdReward } from "@/lib/shop.functions";
+import { shopErrorMessage } from "@/lib/shop-model";
 import { claimCheckin, claimTask, getMyBoard, listTasks, saveWallet, startTask } from "@/lib/tasks.functions";
 import { claimErrorMessage, isAvailable, taskState, type TaskCategory, type TaskDTO } from "@/lib/tasks-model";
 import { cn } from "@/lib/utils";
 import { BottomNav } from "@/components/BottomNav";
+import { AdTaskCard } from "./AdTaskCard";
 import { CheckinCard } from "./CheckinCard";
 import { TaskCard } from "./TaskCard";
 import { useNow } from "./use-now";
@@ -94,6 +98,18 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
     },
     onError: fail,
     onSettled: () => setBusyTask(null),
+  });
+
+  // Ads task: open-ended, one reward per finished ad.
+  const adFn = useServerFn(claimAdReward);
+  const [adsWatched, setAdsWatched] = useState(0);
+  const ad = useMutation({
+    mutationFn: async () => { await showRewardedAd(); return adFn({ data: { initData } }); },
+    onSuccess: (r) => { reward(r.amount); setAdsWatched((n) => n + 1); void refresh(); },
+    onError: (e) => {
+      haptic("error");
+      toast.error(e instanceof Error && e.message === "ad_unavailable" ? "مفيش إعلان متاح دلوقتي، جرب كمان شوية" : shopErrorMessage(e));
+    },
   });
 
   // Save the TON wallet once the player connects it, so the wallet task unlocks.
@@ -191,6 +207,10 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
             claiming={checkin.isPending}
             onClaim={() => (initData ? checkin.mutate() : toast(GUEST_MSG))}
           />
+        </div>
+
+        <div className="mt-3">
+          <AdTaskCard busy={ad.isPending} watched={adsWatched} onWatch={() => (initData ? ad.mutate() : toast(GUEST_MSG))} />
         </div>
 
         <nav aria-label="أقسام المهام" className="-mx-4 mt-5 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

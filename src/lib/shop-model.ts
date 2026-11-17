@@ -1,4 +1,4 @@
-// TON shop + rewarded-ad rules. Ad limits are mirrored by wall_ad_reward in the DB.
+// TON shop + rewarded-ad rules. Ads have no daily cap, only a short gap between ads; mirrored by wall_ad_reward in the DB.
 export const TREASURY_ADDRESS = "UQAp1QxnLJ2z44IooUovvtVShw7hJBEdxCRV3RlbCYC3D8qj";
 
 export type PackId = "starter" | "soldier" | "captain" | "commander";
@@ -16,7 +16,6 @@ export function findPack(id: string) {
 
 export const AD_MIN_REWARD = 100;
 export const AD_GAP_SECONDS = 15;
-export const AD_DAILY_LIMIT = 50;
 /** One ad pays one hour of current mining, never less than AD_MIN_REWARD. */
 export function adReward(ratePerHour: number): number {
   return Math.max(AD_MIN_REWARD, Math.round(ratePerHour));

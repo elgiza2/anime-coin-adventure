@@ -5,6 +5,8 @@ import cover from "@/assets/brand/bot-start-cover.jpg?inline";
 const APP_URL = "https://t.me/Mixsaabot?startapp";
 const GROUP = "https://t.me/micahub";
 const COMMUNITY = "https://t.me/oraien";
+// The Mini App's published address; the admin page itself re-checks the admin role on every request.
+const ADMIN_ORIGIN = "https://anime-coin-adventure.lovable.app";
 
 // Animated custom emoji from the owner's packs (falls back to the plain emoji if Telegram refuses).
 const e = (id: string, alt: string) => `<tg-emoji emoji-id="${id}">${alt}</tg-emoji>`;
@@ -69,6 +71,25 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return Response.json({ ok: true });
         }
         const msg = update?.message;
+        // /101: admins get a button that opens the admin panel inside Telegram. Everyone else gets no answer.
+        if (msg?.chat?.id && typeof msg.text === "string" && /^\/101(@\w+)?$/.test(msg.text.trim())) {
+          const from = (msg as { from?: { username?: string } }).from;
+          const name = (from?.username ?? "").toLowerCase();
+          const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+          const { data: adm } = name ? await db.from("wall_admins" as never).select("role").eq("username", name).maybeSingle() : { data: null };
+          if (adm) {
+            const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: msg.chat.id, parse_mode: "HTML",
+                text: "<b>🛠 Admin panel</b>\nTap the button to open it.",
+                reply_markup: { inline_keyboard: [[{ text: "🛠 Open admin panel", web_app: { url: `${ADMIN_ORIGIN}/101` } }]] },
+              }),
+            });
+            console.log("admin /101 reply", r.status, (await r.text()).slice(0, 200));
+          }
+          return Response.json({ ok: true });
+        }
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
           const chatId = msg.chat!.id;
           const lang = msg.from?.language_code;

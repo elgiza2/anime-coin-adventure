@@ -49,3 +49,5 @@
 - [ ] Full translation review: every screen, story, riddles, bot (all 15 languages)
 - [ ] Confirm language auto-follows the player's Telegram language
 - [ ] Verify start (welcome) pages are translated, opened as a real player
+- [ ] Fix admin panel (/101) not working
+- [ ] Add tasks: join community (@oraien), join group (@micahub), unlimited watch-ads task
