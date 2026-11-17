@@ -1,7 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const APP_URL = "https://t.me/Mixsaabot?startapp";
-const COMMUNITY = "https://t.me/micahub";
+const GROUP = "https://t.me/micahub";
+import cover from "@/assets/brand/bot-start-cover.jpg";
+
+// Animated custom emoji from the owner's packs (falls back to the plain emoji if Telegram refuses).
+const e = (id: string, alt: string) => `<tg-emoji emoji-id="${id}">${alt}</tg-emoji>`;
+const E = {
+  fire: e("5046769637191058547", "🔥"),
+  coin: e("5127453140467058523", "🪙"),
+  gem: e("5127459531378394661", "💎"),
+  star: e("5409271925014801629", "🌟"),
+  gift: e("6032937473162614352", "🎁"),
+  news: e("4992560350982309130", "📣"),
+  bolt: e("5046752770854487087", "⚡️"),
+  ok: e("5406690851533370477", "✅"),
+};
 
 async function secretFor(token: string) {
   const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`tg-webhook:${token}`));
@@ -10,16 +24,16 @@ async function secretFor(token: string) {
 
 function startText(name: string) {
   return [
-    `<b>⚔️ Welcome, ${name}.</b>`,
+    `<b>${E.fire} Welcome, ${name}.</b>`,
     "",
     "<b>Mikasa is calling you to the wall.</b>",
     "",
-    "<b>⛏ Mine $ANIME every day</b> — your level sets your daily earnings.",
-    "<b>🎴 Mint limited NFT cards</b> — only a few copies are left.",
-    "<b>📖 Play the endless anime story</b> — win, lose, and fight again.",
-    "<b>💎 $ANIME is listed on Binance.</b>",
+    `<b>${E.coin} Mine $ANIME every day</b> — your level sets your daily earnings.`,
+    `<b>${E.gift} Mint limited NFT cards</b> — only a few copies are left.`,
+    `<b>${E.bolt} Play the endless anime story</b> — win, lose, and fight again.`,
+    `<b>${E.gem} $ANIME is listed on Binance.</b>`,
     "",
-    "<b>Tap below and take your place.</b>",
+    `<b>${E.star} Tap below and take your place.</b>`,
   ].join("\n");
 }
 
@@ -39,24 +53,29 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         } | null;
         const msg = update?.message;
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
-          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          const send = (caption: string) => fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              chat_id: msg.chat.id,
+              chat_id: msg.chat!.id,
               parse_mode: "HTML",
-              text: startText(esc(msg.from?.first_name || "Soldier")),
+              photo: new URL(cover, request.url).toString(),
+              caption,
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }],
+                  [{ text: "👥 Join the group", url: GROUP, style: "success" }],
                   [
-                    { text: "📣 Community", url: COMMUNITY, style: "success" },
                     { text: "💎 $ANIME on Binance", url: "https://www.binance.com/en/trade/ANIME_USDT", style: "danger" },
                   ],
                 ],
               },
             }),
           });
+          const caption = startText(esc(msg.from?.first_name || "Soldier"));
+          const res = await send(caption);
+          // If Telegram rejects the animated emoji, resend with the plain ones.
+          if (!res.ok) await send(caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1"));
         }
         return Response.json({ ok: true });
       },
