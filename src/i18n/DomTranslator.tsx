@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { detectLang, loadDict, RTL, translateText } from "./index";
+import { detectLang, loadDict, RTL, setActiveDict, translateText } from "./index";
 
 // Translates rendered Arabic text in place (after hydration), so every screen follows the player's Telegram language.
 const ATTRS = ["placeholder", "title", "aria-label", "alt"];
@@ -14,6 +14,7 @@ export function DomTranslator() {
     const done = new WeakMap<Node, string>();
     loadDict(lang).then((dict) => {
       if (dead) return;
+      setActiveDict(dict);
       const text = (n: Text) => {
         if (n.parentElement?.closest("[data-no-tr]")) return;
         const v = n.nodeValue ?? "";

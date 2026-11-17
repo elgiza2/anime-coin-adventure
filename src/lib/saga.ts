@@ -1,3 +1,4 @@
+import { tr } from "@/i18n";
 // Authored story "سجلات السور": 30 chapters in 6 acts. The player builds their hero at the start
 // (path + bond) and every chapter has a story choice that later chapters remember.
 // Fights inside a chapter still go through wall_novel_play (server decides wins/rewards).
@@ -264,7 +265,7 @@ export function sagaChapter(n: number): { ch: Chapter; index: number; season: nu
   return { ch: SAGA[index]!, index, season: Math.floor((n - 1) / SAGA.length) + 1 };
 }
 
-const fill = (t: string, name: string, bond?: Bond) => t.replaceAll("{name}", name).replaceAll("{ally}", bond ? BONDS[bond].label : "ميكاسا");
+const fill = (t: string, name: string, bond?: Bond) => tr(t).replaceAll("{name}", tr(name)).replaceAll("{ally}", bond ? tr(BONDS[bond].label) : tr("ميكاسا"));
 
 /** Dialogue lines for a chapter, filtered by the player's earlier choices. */
 export function sagaLines(n: number, st: SagaState, name: string) {

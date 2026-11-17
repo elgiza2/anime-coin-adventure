@@ -45,3 +45,4 @@
 - [x] Min withdraw 10,000 ANIME
 - [ ] Publish channel posts day 1–30 (src/content/channel-posts.ts) — waiting for owner's go
 - [x] Coin shop price = 30% below market
+- [x] Translate remaining untranslated text (story + all pages)

@@ -26,13 +26,58 @@ export function setLang(l: Lang) {
 const NUM = /[0-9٠-٩][0-9٠-٩,.]*/g;
 export function normKey(s: string) { return s.replace(/\s+/g, " ").trim().replace(NUM, "{n}"); }
 
+const LOOSE = /\{n\}|[0-9٠-٩][0-9٠-٩,.]*|[A-Za-z$#@][\w$#@.]*/g;
+const looseCache = new WeakMap<Record<string, string>, Record<string, string>>();
+function loose(dict: Record<string, string>) {
+  let m = looseCache.get(dict);
+  if (!m) {
+    m = {};
+    for (const [k, v] of Object.entries(dict)) {
+      const ks = k.match(LOOSE) ?? [];
+      // Turn each token of the key into a slot so it can be refilled from the live text.
+      const used = new Set<number>();
+      const vv = v.replace(LOOSE, (tok) => {
+        const at = ks.findIndex((x, i) => x === tok && !used.has(i));
+        if (at < 0) return tok;
+        used.add(at);
+        return `{${at}}`;
+      });
+      m[k.replace(LOOSE, "{n}")] = vv;
+    }
+    looseCache.set(dict, m);
+  }
+  return m;
+}
+
+function exact(s: string, dict: Record<string, string>): string | null {
+  const hit = dict[normKey(s)];
+  if (hit) { const nums = s.match(NUM) ?? []; let i = 0; return hit.replace(/\{n\}/g, () => nums[i++] ?? ""); }
+  const core = s.replace(/\s+/g, " ").trim();
+  const lh = loose(dict)[core.replace(LOOSE, "{n}")];
+  if (lh) { const toks = core.match(LOOSE) ?? []; return lh.replace(/\{(\d+)\}/g, (_, i) => toks[Number(i)] ?? ""); }
+  return null;
+}
+
+function translateCore(s: string, dict: Record<string, string>): string | null {
+  const t = exact(s, dict);
+  if (t) return t;
+  // Hero ranks like "كايل IV": translate the name, keep the numeral.
+  const roman = s.match(/^(.*?)(\s+[IVXLC]+)$/);
+  if (roman) { const r = translateCore(roman[1]!, dict); if (r) return r + roman[2]; }
+  // Titles joined by separators: translate each part.
+  for (const sep of [" — ", " · ", ": ", " - ", "، "]) {
+    if (s.includes(sep)) {
+      const parts = s.split(sep).map((p) => (/[\u0600-\u06FF]/.test(p) ? translateCore(p, dict) : p));
+      if (parts.every((p) => p != null)) return parts.join(sep);
+    }
+  }
+  return null;
+}
+
 export function translateText(s: string, dict: Record<string, string>): string | null {
   if (!/[\u0600-\u06FF]/.test(s)) return null;
-  const hit = dict[normKey(s)];
-  if (!hit) return null;
-  const nums = s.match(NUM) ?? [];
-  let i = 0;
-  const body = hit.replace(/\{n\}/g, () => nums[i++] ?? "");
+  const body = translateCore(s.trim(), dict);
+  if (body == null) return null;
   const lead = s.match(/^\s*/)![0], trail = s.match(/\s*$/)![0];
   return lead + body + trail;
 }
@@ -42,3 +87,8 @@ export async function loadDict(l: Lang): Promise<Record<string, string>> {
   const f = files[`./locales/${l}.json`];
   return f ? (await f()).default : {};
 }
+
+// Shared dictionary for code that translates before inserting names (story lines, typewriter text).
+let ACTIVE: Record<string, string> = {};
+export function setActiveDict(d: Record<string, string>) { ACTIVE = d; }
+export function tr(s: string): string { return translateText(s, ACTIVE) ?? s; }
