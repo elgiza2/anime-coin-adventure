@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 
 const APP_URL = "https://t.me/Mixsaabot?startapp";
 const GROUP = "https://t.me/micahub";
-import cover from "@/assets/brand/bot-start-cover.jpg";
 
 // Animated custom emoji from the owner's packs (falls back to the plain emoji if Telegram refuses).
 const e = (id: string, alt: string) => `<tg-emoji emoji-id="${id}">${alt}</tg-emoji>`;
@@ -59,7 +58,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             body: JSON.stringify({
               chat_id: msg.chat!.id,
               parse_mode: "HTML",
-              photo: new URL(cover, request.url).toString(),
+              photo: new URL("/api/public/telegram/cover", request.url).toString(),
               caption,
               reply_markup: {
                 inline_keyboard: [
@@ -75,6 +74,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const caption = startText(esc(msg.from?.first_name || "Soldier"));
           const res = await send(caption);
           // If Telegram rejects the animated emoji, resend with the plain ones.
+          if (!res.ok) console.error("start send failed", res.status, await res.clone().text());
           if (!res.ok) await send(caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1"));
         }
         return Response.json({ ok: true });

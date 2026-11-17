@@ -19,6 +19,7 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
+import { Route as ApiPublicTelegramCoverRouteImport } from './routes/api/public/telegram/cover'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -72,6 +73,11 @@ const ApiPublicWalletIconRoute = ApiPublicWalletIconRouteImport.update({
   path: '/api/public/wallet-icon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTelegramCoverRoute = ApiPublicTelegramCoverRouteImport.update({
+  id: '/api/public/telegram/cover',
+  path: '/api/public/telegram/cover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTelegramWebhookRoute =
   ApiPublicTelegramWebhookRouteImport.update({
     id: '/api/public/telegram/webhook',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/wallet': typeof WalletRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
+  '/api/public/telegram/cover': typeof ApiPublicTelegramCoverRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/tonconnect-manifest'
     | '/api/public/wallet-icon'
+    | '/api/public/telegram/cover'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -172,6 +184,7 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
+  ApiPublicTelegramCoverRoute: typeof ApiPublicTelegramCoverRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWalletIconRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/telegram/cover': {
+      id: '/api/public/telegram/cover'
+      path: '/api/public/telegram/cover'
+      fullPath: '/api/public/telegram/cover'
+      preLoaderRoute: typeof ApiPublicTelegramCoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/telegram/webhook': {
       id: '/api/public/telegram/webhook'
       path: '/api/public/telegram/webhook'
@@ -268,6 +288,7 @@ const rootRouteChildren: RootRouteChildren = {
   WalletRoute: WalletRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
+  ApiPublicTelegramCoverRoute: ApiPublicTelegramCoverRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport
