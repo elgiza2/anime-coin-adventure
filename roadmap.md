@@ -43,7 +43,7 @@
 - [x] Pages fit screen without scroll; safe top area same background
 - [x] Reopen app on last page, not the start
 - [x] Min withdraw 10,000 ANIME
-- [ ] Publish channel post day 1 now (owner said go); days 2–30 auto-post
+- [x] Channel post day 1 published; days 2–30 auto-post daily from 14:00 UTC
 - [x] Coin shop price = 30% below market
 - [x] Translate remaining untranslated text (story + all pages)
 - [ ] Full translation review: every screen, story, riddles, bot (all 15 languages)

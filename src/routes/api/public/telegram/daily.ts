@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { POSTS } from "@/content/channel-posts";
 import { BATCH, cronSecret, currentSlot, DAILY_GIFT_COINS, slotMessage } from "@/lib/bot-daily.server";
 
+// Post pictures ship with the app; the scheduler fetches the bytes from its own origin and uploads them to Telegram.
+const POST_IMAGES = import.meta.glob("/src/assets/posts/*.jpg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+
 const esc = (s: string) => s.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]!);
 
 // Called by an external scheduler every ~10 minutes with ?key=<secret>.
@@ -69,11 +72,16 @@ async function autoPost(db: any, token: string, origin: string): Promise<number 
   if (!next) return null;
   const { error } = await db.from("wall_jobs").insert({ name: `post:${next.day}`, locked_until: now.toISOString() });
   if (error) return null; // another run claimed it
-  const photo = next.image.startsWith("http") ? next.image : origin + next.image;
-  const send = (buttons: unknown) => fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: channel, photo, caption: next.caption, parse_mode: "HTML", reply_markup: { inline_keyboard: buttons } }),
-  });
+  const src = POST_IMAGES[`/src/assets/posts/${next.image}`];
+  const img = src ? await fetch(new URL(src, origin)).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null) : null;
+  if (!img) { await db.from("wall_jobs").delete().eq("name", `post:${next.day}`); console.error("post image missing", next.image); return null; }
+  const send = (buttons: unknown) => {
+    const fd = new FormData();
+    fd.append("chat_id", channel); fd.append("caption", next.caption); fd.append("parse_mode", "HTML");
+    fd.append("reply_markup", JSON.stringify({ inline_keyboard: buttons }));
+    fd.append("photo", new Blob([img], { type: "image/jpeg" }), next.image);
+    return fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: "POST", body: fd });
+  };
   let res = await send(next.buttons);
   if (!res.ok) res = await send(next.buttons.map((r) => r.map(({ text, url }) => ({ text, url }))));
   if (!res.ok) { await db.from("wall_jobs").delete().eq("name", `post:${next.day}`); console.error("post failed", await res.text()); return null; }

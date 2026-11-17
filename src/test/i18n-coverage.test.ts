@@ -7,11 +7,12 @@ import { LANGS, translateText, trf } from "@/i18n";
 import { SAGA, PATHS, BONDS } from "@/lib/saga";
 import { NFT_DESIGNS, RARITY_LABEL } from "@/lib/nft-model";
 import { HEROES } from "@/components/heroes/heroes-data";
+import { STORY_ITEMS } from "@/lib/story-model";
 
 const AR = /[\u0600-\u06FF]/;
 const SRC = path.resolve(__dirname, "..");
 // Not shown as UI text: language self-names, normalisation characters, separators, the wallet manifest name, unused legacy encounter text.
-const SKIP_FILES = ["i18n/index.ts", "lib/story-model.ts", "routes/api/public/tonconnect-manifest.ts", "lib/novel-model.ts"];
+const SKIP_FILES = ["i18n/index.ts", "lib/story-model.ts", "routes/api/public/tonconnect-manifest.ts", "lib/novel-model.ts", "lib/story-i18n.server.ts"];
 
 function sourceStrings(): string[] {
   const out: string[] = [];
@@ -47,6 +48,7 @@ function dataStrings(): string[] {
     for (const l of ch.lines) s.push(l.who, l.text);
     for (const o of ch.options) s.push(o.label, o.reply);
   }
+  for (const it of STORY_ITEMS) s.push(it.label, it.desc);
   s.push("3س 20د");
   return s.filter((t) => AR.test(t));
 }
