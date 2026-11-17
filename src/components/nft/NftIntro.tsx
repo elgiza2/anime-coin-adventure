@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react";
 import { INTRO_LINE_KO, INTRO_POSTER, INTRO_STILL, INTRO_VIDEO } from "./nft-art";
 
 // Deterministic star field so server and browser render the same markup.
+// Values are rounded so both sides format the identical string.
 const STARS = Array.from({ length: 90 }, (_, i) => {
   const r = (n: number) => ((Math.sin(i * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
-  return { x: r(1) * 100, y: r(2) * 100, s: 1 + r(3) * 2.2, d: r(4) * 2.6 };
+  return { x: +(r(1) * 100).toFixed(3), y: +(r(2) * 100).toFixed(3), s: +(1 + r(3) * 2.2).toFixed(2), d: +(r(4) * 2.6).toFixed(2) };
 });
 
 export function StarField({ className = "" }: { className?: string }) {

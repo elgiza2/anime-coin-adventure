@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
+import { BottomNav } from "@/components/BottomNav";
 import { COIN, formatAmount } from "@/lib/coin";
 import { getRaidState, spinRaid } from "@/lib/raid.functions";
 import { MAX_FREE_SPINS, SPIN_PACKS, VAULT_KEYS, WHEEL, type SpinResult } from "@/lib/raid-model";
@@ -84,11 +85,11 @@ export function RaidPage() {
   const spins = s?.spins ?? 0;
   const revengeable = (s?.attacks ?? []).filter((a) => !a.blocked && !a.avenged);
 
-  return <main className="nft-night relative mx-auto min-h-dvh max-w-md overflow-hidden pb-10">
+  return <main className="nft-night relative mx-auto min-h-dvh max-w-md overflow-hidden pb-28">
     <StarField />
     <header className="relative z-10 flex items-center gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
       <Link to="/battle" aria-label="رجوع لساحة الحرب" className="glass inline-flex size-10 items-center justify-center rounded-full"><ChevronRight className="size-5" /></Link>
-      <h1 className="font-display text-2xl font-extrabold">غارة الخزينة</h1>
+      <h1 className="font-display text-2xl font-extrabold">غارات الأسوار</h1>
     </header>
 
     {/* Vault jackpot */}
@@ -149,5 +150,6 @@ export function RaidPage() {
       </div>
       {s?.pendingId && <Button variant="outline" className="mt-2 w-full" disabled={busy} onClick={() => { setBusy(true); confirm(s.pendingId!).catch((e) => toast.error(shopErrorMessage(e))).finally(() => setBusy(false)); }}>تحقق من دفعة سابقة</Button>}
     </section>
+    <BottomNav />
   </main>;
 }
