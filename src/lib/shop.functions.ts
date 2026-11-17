@@ -6,6 +6,7 @@ import { authPlayer } from "./tasks.functions";
 import { MINE_PASS_TON } from "./mine-pass-model";
 import { NFT_MINT_TON, type MintedNft } from "./nft-model";
 import { findSpinPack } from "./raid-model";
+import { findStoryItem } from "./story-model";
 
 const authInput = z.object({ initData: z.string().min(10).max(4096) });
 
@@ -16,6 +17,7 @@ export const createTonPayment = createServerFn({ method: "POST" })
     const pack = data.pack === "mine_pass" ? { id: "mine_pass", ton: MINE_PASS_TON, coins: 0 }
       : data.pack === "nft_mint" ? { id: "nft_mint", ton: NFT_MINT_TON, coins: 0 }
       : findSpinPack(data.pack) ? { id: data.pack, ton: findSpinPack(data.pack)!.ton, coins: 0 }
+      : findStoryItem(data.pack) ? { id: data.pack, ton: findStoryItem(data.pack)!.ton, coins: 0 }
       : findPack(data.pack);
     if (!pack) throw new Error("bad_pack");
     const { user, db } = await authPlayer(data.initData);

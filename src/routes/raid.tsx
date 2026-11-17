@@ -4,9 +4,9 @@ import { RaidPage } from "@/components/raid/RaidPage";
 export const Route = createFileRoute("/raid")({
   head: () => ({
     meta: [
-      { title: "غارات الأسوار — منجم الأسوار" },
-      { name: "description", content: "لف العجلة، اهجم على أسوار اللاعيبة، انتقم، وافتح الخزينة الكبرى." },
-      { property: "og:title", content: "غارات الأسوار — منجم الأسوار" },
+      { title: "حكايات السور — منجم الأسوار" },
+      { name: "description", content: "قصة مصورة كل يوم فيها لغز، حله مع الجروب واكسب عملات، ولف عجلة الغارات." },
+      { property: "og:title", content: "حكايات السور — منجم الأسوار" },
       { property: "og:description", content: "غارات وانتقام وخزينة بتكبر مع كل لفة." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

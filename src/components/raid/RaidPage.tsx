@@ -16,6 +16,7 @@ import { getInitData, haptic } from "@/lib/telegram";
 import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import { StarField } from "@/components/nft/NftIntro";
+import { StoryGame } from "@/components/story/StoryGame";
 
 function resultText(r: SpinResult): string {
   switch (r.segment) {
@@ -87,9 +88,12 @@ export function RaidPage() {
   return <main className="nft-night relative mx-auto min-h-dvh max-w-md overflow-hidden pb-28">
     <StarField />
     <header className="relative z-10 flex items-center gap-2 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
-      <h1 className="font-display text-2xl font-extrabold">غارات الأسوار</h1>
+      <h1 className="font-display text-2xl font-extrabold">حكايات السور</h1>
     </header>
 
+    <StoryGame initData={initData} />
+
+    <h2 className="relative z-10 mx-4 mt-8 font-display text-xl font-extrabold">عجلة الغارات</h2>
     {/* Vault jackpot */}
     <section className="glass raid-vault-glow relative z-10 mx-4 mt-4 rounded-3xl p-4 text-center">
       <p className="text-xs text-foreground/70">الخزينة الكبرى</p>

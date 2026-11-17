@@ -4555,6 +4555,8 @@ export type Database = {
         Row: {
           chapter: number
           day: string
+          hint_used: boolean
+          letters_shown: number
           solved: boolean
           solved_at: string | null
           solved_rank: number | null
@@ -4564,6 +4566,8 @@ export type Database = {
         Insert: {
           chapter: number
           day: string
+          hint_used?: boolean
+          letters_shown?: number
           solved?: boolean
           solved_at?: string | null
           solved_rank?: number | null
@@ -4573,6 +4577,8 @@ export type Database = {
         Update: {
           chapter?: number
           day?: string
+          hint_used?: boolean
+          letters_shown?: number
           solved?: boolean
           solved_at?: string | null
           solved_rank?: number | null
@@ -4626,16 +4632,22 @@ export type Database = {
         Row: {
           created_at: string
           extra_tries: number
+          hints: number
+          letters: number
           tg_id: number
         }
         Insert: {
           created_at?: string
           extra_tries?: number
+          hints?: number
+          letters?: number
           tg_id: number
         }
         Update: {
           created_at?: string
           extra_tries?: number
+          hints?: number
+          letters?: number
           tg_id?: number
         }
         Relationships: [
@@ -5232,6 +5244,7 @@ export type Database = {
       }
       wall_story_norm: { Args: { _t: string }; Returns: string }
       wall_story_today: { Args: never; Returns: number }
+      wall_story_use: { Args: { _item: string; _tg: number }; Returns: Json }
       wall_upgrade_hero: {
         Args: { _hero: number; _tg: number }
         Returns: number

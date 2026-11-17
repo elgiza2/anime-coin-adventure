@@ -6,7 +6,7 @@ const ITEMS: { to: "/tasks" | "/battle" | "/heroes" | "/raid" | "/wallet" | "/pr
   { to: "/tasks", label: "المهام", emoji: "scout" },
   { to: "/battle", label: "الحرب", emoji: "rocket" },
   { to: "/heroes", label: "الأبطال", emoji: "shields" },
-  { to: "/raid", label: "الغارات", emoji: "spark" },
+  { to: "/raid", label: "الحكايات", emoji: "spark" },
   { to: "/wallet", label: "المحفظة", emoji: "wallet" },
   { to: "/profile", label: "الملف", emoji: "orbit" },
 ];

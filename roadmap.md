@@ -33,4 +33,4 @@
 - [ ] Watch-ad tasks on the Tasks page (Monetag)
 - [x] Games: Vault Raid page (wheel, raids + revenge, vault jackpot in coins, TON spin packs); button on war page
 - [x] Games page in the bottom navigation as "الغارات", renamed "غارات الأسوار", own nav bar; its card button removed from the battle page
-- [ ] Illustrated story game: daily chapter with artwork + riddle the community solves together in https://t.me/micahub; server-checked answers, 3 free tries/day, TON item shop (hint, reveal a letter, extra tries)
+- [x] Illustrated story game: daily chapter with artwork + riddle the community solves together in https://t.me/micahub; server-checked answers, 3 free tries/day, TON item shop (hint, reveal a letter, extra tries)
