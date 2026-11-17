@@ -318,3 +318,27 @@
 }
 @utility profile-shade { background: var(--profile-shade); }
 @utility profile-recruit { background: var(--profile-recruit); border: 1px solid var(--glass-highlight); box-shadow: var(--shadow-glass); }
+
+/* ---------- Mine Pass collectible card ---------- */
+:root {
+  --pass-frame: linear-gradient(150deg, oklch(0.93 0.09 88), oklch(0.62 0.12 62) 35%, oklch(0.88 0.11 82) 60%, oklch(0.52 0.1 55));
+  --pass-shade: linear-gradient(to bottom, oklch(0.12 0.006 70 / 0) 40%, oklch(0.12 0.006 70 / 0.75) 72%, oklch(0.1 0.006 70 / 0.96) 100%);
+  --pass-shine: linear-gradient(115deg, transparent 30%, oklch(0.98 0.05 90 / 0.35) 45%, oklch(0.85 0.1 180 / 0.18) 52%, transparent 65%);
+  --pass-glow: 0 18px 50px -12px oklch(0.78 0.13 75 / 0.45), 0 0 0 1px oklch(0.9 0.08 85 / 0.25);
+  --pass-number: linear-gradient(180deg, oklch(0.98 0.06 92), oklch(0.8 0.14 74) 70%, oklch(0.66 0.13 62));
+}
+@utility pass-frame { background: var(--pass-frame); box-shadow: var(--pass-glow); }
+@utility pass-shade { background: var(--pass-shade); }
+@utility pass-number { background: var(--pass-number); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@utility pass-shine {
+  background: var(--pass-shine);
+  background-size: 250% 100%;
+  animation: pass-shine 4.5s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+@utility pass-locked { filter: grayscale(0.85) brightness(0.55); }
+@keyframes pass-shine {
+  0%, 15% { background-position: 120% 0; }
+  70%, 100% { background-position: -120% 0; }
+}
+@media (prefers-reduced-motion: reduce) { .pass-shine { animation: none; } }

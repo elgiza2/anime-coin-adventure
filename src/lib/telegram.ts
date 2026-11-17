@@ -1,6 +1,7 @@
 // Browser helpers around the Telegram Mini App SDK (window.Telegram.WebApp).
 type WebApp = {
   initData: string;
+  initDataUnsafe?: { user?: { first_name?: string; username?: string } };
   ready?: () => void;
   expand?: () => void;
   openLink?: (url: string) => void;
@@ -32,4 +33,10 @@ export function shareLink(url: string, text: string) {
 
 export function haptic(type: "success" | "error") {
   webApp()?.HapticFeedback?.notificationOccurred(type);
+}
+
+/** Display-only name from Telegram; never trusted on the server. */
+export function telegramDisplayName(): string {
+  const u = webApp()?.initDataUnsafe?.user;
+  return u?.first_name || (u?.username ? "@" + u.username : "");
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasMinePass, MINE_PASS_NANO, MINE_PASS_TON } from "@/lib/mine-pass-model";
+import { formatPassNumber, hasMinePass, MINE_PASS_NANO, MINE_PASS_TON } from "@/lib/mine-pass-model";
 import { pendingCoins, titansSlain } from "@/lib/heroes-model";
 import { toNano } from "@/lib/shop-model";
 
@@ -21,5 +21,10 @@ describe("mandatory Mine Pass", () => {
     expect(hasMinePass(null)).toBe(false);
     expect(hasMinePass({ number: 0, activatedAt: "2026-11-17T06:00:00Z" })).toBe(false);
     expect(hasMinePass({ number: 1, activatedAt: "2026-11-17T06:00:00Z" })).toBe(true);
+  });
+  it("shows each player's unique pass number as a 4-digit serial", () => {
+    expect(formatPassNumber(1)).toBe("#0001");
+    expect(formatPassNumber(42)).toBe("#0042");
+    expect(formatPassNumber(12345)).toBe("#12345");
   });
 });
