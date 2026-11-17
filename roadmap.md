@@ -30,14 +30,14 @@
 - [ ] Rename coin once the owner sends the real name (one place: coin setting)
 - [x] Videos for heroes 3-5 (آرين، ليوك، إيفان)
 - [ ] Later (on hold): VIP; more bottom-nav pages
-- [ ] Watch-ad tasks on the Tasks page (Monetag)
+- [x] Watch-ad task on the Tasks page (Monetag, unlimited)
 - [x] Games: Vault Raid page (wheel, raids + revenge, vault jackpot in coins, TON spin packs); button on war page
 - [x] Games page in the bottom navigation as "الغارات", renamed "غارات الأسوار", own nav bar; its card button removed from the battle page
 - [x] Illustrated story game: daily chapter with artwork + riddle the community solves together in https://t.me/micahub; server-checked answers, 3 free tries/day, TON item shop (hint, reveal a letter, extra tries)
 - [x] Bot token + news channel saved; app opens full-screen with safe space under Telegram's buttons; /start message (English, bold, colored buttons)
 - [x] Admin panel at /101 (@eigiza, @torker): stats, payment alerts, task add/edit/delete, task-only sub-admins
 - [x] Daily bot reminders (3/day) + daily chat gift — needs an external scheduler (cron-job.org) calling the daily link every 10 min
-- [ ] 30 English posts with new images; auto-post 2-3/day to the news channel (owner says when to start)
+- [x] 30 English posts with images; day 1 posted, rest auto-post daily
 - [ ] Custom emoji packs in /start — needs the bot to own a Fragment username (Telegram rule)
 - [x] Verified badge from Des_Ch_9722f_by_TgEmodziBot pack
 - [x] Pages fit screen without scroll; safe top area same background
