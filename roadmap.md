@@ -8,6 +8,7 @@
 - [x] Owner confirmed: 5 TON per mint; wants real on-chain NFTs
 - [ ] Real TON NFTs in the player wallet — later step: needs a published NFT collection on TON and a funded minter wallet key from the owner
 - [ ] "Fair" NFT mint — waiting for owner to say what fair means (equal odds / guaranteed rare / limited supply / show odds)
+- [ ] Owner makes the Mikasa video himself (prompt + start image provided); add it to the NFT intro once he uploads it
 - [ ] More design changes — waiting for owner's direction
 
 - [x] Mandatory Mine Pass: 0.05 TON, confirmed payment, unique number, verification badge and mining gate; actual wallet transfer requires Telegram and a funded TON wallet
