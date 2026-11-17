@@ -3,6 +3,7 @@ import cover from "@/assets/brand/bot-start-cover.jpg?inline";
 
 const APP_URL = "https://t.me/Mixsaabot?startapp";
 const GROUP = "https://t.me/micahub";
+const COMMUNITY = "https://t.me/oraien";
 
 // Animated custom emoji from the owner's packs (falls back to the plain emoji if Telegram refuses).
 const e = (id: string, alt: string) => `<tg-emoji emoji-id="${id}">${alt}</tg-emoji>`;
@@ -73,7 +74,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const reply_markup = {
             inline_keyboard: [
               [{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }],
-              [{ text: "👥 Join the group", url: GROUP, style: "success" }],
+              [{ text: "👥 Join the group", url: GROUP, style: "success" }, { text: "📢 Community", url: COMMUNITY, style: "success" }],
               [{ text: "💎 $ANIME on Binance", url: "https://www.binance.com/en/trade/ANIME_USDT", style: "danger" }],
             ],
           };

@@ -134,7 +134,10 @@ type TgFull = {
   ready?: () => void; expand?: () => void; requestFullscreen?: () => void; disableVerticalSwipes?: () => void;
   safeAreaInset?: { top?: number }; contentSafeAreaInset?: { top?: number };
   onEvent?: (e: string, cb: () => void) => void;
+  BackButton?: { show: () => void; hide: () => void; onClick: (cb: () => void) => void; offClick: (cb: () => void) => void };
 };
+// Main tabs hide Telegram's back button; every other page shows it.
+const TAB_PAGES = ["/", "/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile"];
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -143,6 +146,17 @@ function RootComponent() {
   useEffect(() => {
     rememberPage(router.state.location.pathname);
     return router.subscribe("onResolved", (e) => rememberPage(e.toLocation.pathname));
+  }, [router]);
+  useEffect(() => {
+    // Telegram's native back button: goes to the previous page, or to the battle tab if there is none.
+    const bb = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp?.BackButton;
+    if (!bb) return;
+    const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/battle" }); };
+    const sync = (path: string) => (TAB_PAGES.includes(path) ? bb.hide() : bb.show());
+    bb.onClick(back);
+    sync(router.state.location.pathname);
+    const off = router.subscribe("onResolved", (e) => sync(e.toLocation.pathname));
+    return () => { off(); bb.offClick(back); };
   }, [router]);
   useEffect(() => {
     // Open as a full-screen Telegram app and keep content below Telegram's own buttons.
