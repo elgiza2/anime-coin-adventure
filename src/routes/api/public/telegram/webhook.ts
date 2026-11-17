@@ -71,13 +71,16 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const msg = update?.message;
         if (msg?.chat?.id && typeof msg.text === "string" && msg.text.startsWith("/start")) {
           const chatId = msg.chat!.id;
-          const reply_markup = {
-            inline_keyboard: [
-              [{ text: "⚔️ Open the game", url: APP_URL, style: "primary" }],
-              [{ text: "👥 Join the group", url: GROUP, style: "success" }, { text: "📢 Community", url: COMMUNITY, style: "success" }],
-              [{ text: "💎 $ANIME on Binance", url: "https://www.binance.com/en/trade/ANIME_USDT", style: "danger" }],
-            ],
-          };
+          // Premium animated emoji on each button; plain emoji kept for a fallback if Telegram refuses them.
+          const btn = (icon: string, alt: string, text: string, url: string, style: string) => ({ text, alt, url, style, icon_custom_emoji_id: icon });
+          const rows = [
+            [btn("5046752770854487087", "⚔️", "Open the game", APP_URL, "primary")],
+            [btn("5046769637191058547", "👥", "Join the group", GROUP, "success"), btn("4992560350982309130", "📢", "Community", COMMUNITY, "success")],
+            [btn("5127459531378394661", "💎", "$ANIME on Binance", "https://www.binance.com/en/trade/ANIME_USDT", "danger")],
+          ];
+          const premium = { inline_keyboard: rows.map((r) => r.map(({ alt: _a, ...b }) => b)) };
+          const basic = { inline_keyboard: rows.map((r) => r.map(({ alt, text, url, style }) => ({ text: `${alt} ${text}`, url, style }))) };
+          let reply_markup: object = premium;
           const api = `https://api.telegram.org/bot${token}`;
           // Upload the photo bytes directly so no public image link is needed.
           const sendPhoto = (caption: string) => {
@@ -94,7 +97,8 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const caption = startText(esc(msg.from?.first_name || "Soldier"));
           const plain = caption.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, "$1");
           let res = await sendPhoto(caption);
-          if (!res.ok) { console.error("start photo", res.status, await res.text()); res = await sendPhoto(plain); }
+          if (!res.ok) { console.error("start photo", res.status, await res.text()); reply_markup = basic; res = await sendPhoto(caption); }
+          if (!res.ok) { console.error("start photo basic", res.status, await res.text()); res = await sendPhoto(plain); }
           if (!res.ok) {
             console.error("start photo plain", res.status, await res.text());
             // Last resort: text only, so /start always answers.

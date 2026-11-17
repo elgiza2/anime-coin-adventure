@@ -5,14 +5,14 @@ export const APP_LINK = "https://t.me/Mixsaabot?startapp";
 export const GROUP_LINK = "https://t.me/micahub";
 export const COMMUNITY_LINK = "https://t.me/oraien";
 
-type Btn = { text: string; url: string; style?: "primary" | "success" | "danger" };
+type Btn = { text: string; url: string; style?: "primary" | "success" | "danger"; icon_custom_emoji_id?: string };
 export type ChannelPost = { day: number; image: string; caption: string; buttons: Btn[][] };
 
 const TOP = ["Binance", "Upbit", "Bybit", "OKX", "Kraken", "Bitget", "KuCoin", "Gate", "MEXC", "HTX", "Crypto.com", "Bithumb", "Bitvavo", "WhiteBIT", "Uniswap (Ethereum)"];
 const exchangeRows = (): Btn[][] => {
   const list = TOP.map((n) => ANIME_EXCHANGES.find((e) => e.name === n)).filter((e): e is NonNullable<typeof e> => !!e);
   const rows: Btn[][] = [];
-  for (let i = 0; i < list.length; i += 3) rows.push(list.slice(i, i + 3).map((e) => ({ text: e.name.replace(" (Ethereum)", ""), url: e.url })));
+  for (let i = 0; i < list.length; i += 3) rows.push(list.slice(i, i + 3).map((e) => ({ text: e.name.replace(" (Ethereum)", ""), url: e.url, icon_custom_emoji_id: "5127453140467058523" })));
   return rows;
 };
 
@@ -39,8 +39,8 @@ export const POST_1: ChannelPost = {
     "<b>👇 Tap below and claim your place on the wall.</b>",
   ].join("\n"),
   buttons: [
-    [{ text: "⚔️ Play Mikasa", url: APP_LINK, style: "primary" }],
-    [{ text: "👥 Group", url: GROUP_LINK, style: "success" }, { text: "📢 Community", url: COMMUNITY_LINK, style: "success" }],
+    [{ text: "Play Mikasa", url: APP_LINK, style: "primary", icon_custom_emoji_id: "5046752770854487087" }],
+    [{ text: "Group", url: GROUP_LINK, style: "success", icon_custom_emoji_id: "5046769637191058547" }, { text: "Community", url: COMMUNITY_LINK, style: "success", icon_custom_emoji_id: "4992560350982309130" }],
     ...exchangeRows(),
   ],
 };
