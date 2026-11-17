@@ -4483,6 +4483,74 @@ export type Database = {
           },
         ]
       }
+      wall_raid_state: {
+        Row: {
+          created_at: string
+          keys: number
+          shields: number
+          spins: number
+          spins_at: string
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          keys?: number
+          shields?: number
+          spins?: number
+          spins_at?: string
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          keys?: number
+          shields?: number
+          spins?: number
+          spins_at?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wall_raid_state_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: true
+            referencedRelation: "wall_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      wall_raids: {
+        Row: {
+          amount: number
+          attacker: number
+          avenged: boolean
+          blocked: boolean
+          created_at: string
+          id: number
+          revenge: boolean
+          victim: number
+        }
+        Insert: {
+          amount?: number
+          attacker: number
+          avenged?: boolean
+          blocked?: boolean
+          created_at?: string
+          id?: never
+          revenge?: boolean
+          victim: number
+        }
+        Update: {
+          amount?: number
+          attacker?: number
+          avenged?: boolean
+          blocked?: boolean
+          created_at?: string
+          id?: never
+          revenge?: boolean
+          victim?: number
+        }
+        Relationships: []
+      }
       wall_task_progress: {
         Row: {
           claims_count: number
@@ -4618,6 +4686,30 @@ export type Database = {
           total_level?: number
           username?: string | null
           wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      wall_vault: {
+        Row: {
+          id: number
+          last_win: number | null
+          last_win_at: string | null
+          last_winner: number | null
+          pot: number
+        }
+        Insert: {
+          id?: number
+          last_win?: number | null
+          last_win_at?: string | null
+          last_winner?: number | null
+          pot?: number
+        }
+        Update: {
+          id?: number
+          last_win?: number | null
+          last_win_at?: string | null
+          last_winner?: number | null
+          pot?: number
         }
         Relationships: []
       }
@@ -5012,6 +5104,27 @@ export type Database = {
         }[]
       }
       wall_nft_roll: { Args: { _r: number }; Returns: number }
+      wall_raid_load: {
+        Args: { _tg: number }
+        Returns: {
+          created_at: string
+          keys: number
+          shields: number
+          spins: number
+          spins_at: string
+          tg_id: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "wall_raid_state"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      wall_raid_spin: {
+        Args: { _revenge?: number; _tg: number }
+        Returns: Json
+      }
       wall_start_task: {
         Args: { _task: string; _tg: number }
         Returns: undefined
