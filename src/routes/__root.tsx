@@ -128,8 +128,32 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+type TgFull = {
+  ready?: () => void; expand?: () => void; requestFullscreen?: () => void; disableVerticalSwipes?: () => void;
+  safeAreaInset?: { top?: number }; contentSafeAreaInset?: { top?: number };
+  onEvent?: (e: string, cb: () => void) => void;
+};
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    // Open as a full-screen Telegram app and keep content below Telegram's own buttons.
+    const tg = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp;
+    if (!tg) return;
+    tg.ready?.();
+    tg.expand?.();
+    try { tg.requestFullscreen?.(); } catch { /* older clients */ }
+    tg.disableVerticalSwipes?.();
+    const apply = () => {
+      const a = tg.safeAreaInset?.top ?? 0;
+      const b = tg.contentSafeAreaInset?.top ?? 0;
+      document.documentElement.style.setProperty("--tg-safe-top", `${a + b}px`);
+    };
+    apply();
+    tg.onEvent?.("safeAreaChanged", apply);
+    tg.onEvent?.("contentSafeAreaChanged", apply);
+    tg.onEvent?.("fullscreenChanged", apply);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
