@@ -74,6 +74,12 @@ export function HeroesPage() {
     onError: (e) => { haptic("error"); toast.error(upgradeErrorMessage(e)); },
   });
 
+  // Auto-upgrade: whenever the balance covers the next level, the current hero levels up by itself (server still checks the price).
+  useEffect(() => {
+    if (!b || guest || up.isPending || board.isFetching || myLvl >= MAX_LEVEL || balance < nextCost) return;
+    up.mutate(mine);
+  }, [b, guest, up.isPending, board.isFetching, myLvl, balance, nextCost, mine]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <main className="mx-auto min-h-dvh max-w-md px-4 pb-28 [--main-pt:1rem]">
       {/* Title + balance */}
@@ -107,7 +113,7 @@ export function HeroesPage() {
                 <div className="bg-gold-bar h-full rounded-full" style={{ width: `${Math.min(100, (balance / nextCost) * 100)}%` }} />
               </div>
               <p className="mt-1.5 text-xs text-muted-foreground">
-                {balance >= nextCost ? "تقدر ترقّي دلوقتي 🔥" : `باقي ${formatAmount(nextCost - balance)} ${COIN.symbol}`}
+                {balance >= nextCost ? "بيترقّى تلقائيًا… ⚡" : `باقي ${formatAmount(nextCost - balance)} ${COIN.symbol} ويترقّى تلقائيًا`}
               </p>
             </>
           )}
