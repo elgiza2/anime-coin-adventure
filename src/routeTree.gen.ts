@@ -10,33 +10,129 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BattleRouteImport } from './routes/battle'
+import { Route as HeroesRouteImport } from './routes/heroes'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
+import { Route as ApiPublicWalletIconRouteImport } from './routes/api/public/wallet-icon'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BattleRoute = BattleRouteImport.update({
+  id: '/battle',
+  path: '/battle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeroesRoute = HeroesRouteImport.update({
+  id: '/heroes',
+  path: '/heroes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTonconnectManifestRoute =
+  ApiPublicTonconnectManifestRouteImport.update({
+    id: '/api/public/tonconnect-manifest',
+    path: '/api/public/tonconnect-manifest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWalletIconRoute = ApiPublicWalletIconRouteImport.update({
+  id: '/api/public/wallet-icon',
+  path: '/api/public/wallet-icon',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/profile': typeof ProfileRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/profile': typeof ProfileRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/battle': typeof BattleRoute
+  '/heroes': typeof HeroesRoute
+  '/profile': typeof ProfileRoute
+  '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/wallet-icon': typeof ApiPublicWalletIconRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/battle'
+    | '/heroes'
+    | '/profile'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/battle'
+    | '/heroes'
+    | '/profile'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
+  id:
+    | '__root__'
+    | '/'
+    | '/battle'
+    | '/heroes'
+    | '/profile'
+    | '/tasks'
+    | '/wallet'
+    | '/api/public/tonconnect-manifest'
+    | '/api/public/wallet-icon'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BattleRoute: typeof BattleRoute
+  HeroesRoute: typeof HeroesRoute
+  ProfileRoute: typeof ProfileRoute
+  TasksRoute: typeof TasksRoute
+  WalletRoute: typeof WalletRoute
+  ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
+  ApiPublicWalletIconRoute: typeof ApiPublicWalletIconRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +144,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/battle': {
+      id: '/battle'
+      path: '/battle'
+      fullPath: '/battle'
+      preLoaderRoute: typeof BattleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/heroes': {
+      id: '/heroes'
+      path: '/heroes'
+      fullPath: '/heroes'
+      preLoaderRoute: typeof HeroesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/tonconnect-manifest': {
+      id: '/api/public/tonconnect-manifest'
+      path: '/api/public/tonconnect-manifest'
+      fullPath: '/api/public/tonconnect-manifest'
+      preLoaderRoute: typeof ApiPublicTonconnectManifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/wallet-icon': {
+      id: '/api/public/wallet-icon'
+      path: '/api/public/wallet-icon'
+      fullPath: '/api/public/wallet-icon'
+      preLoaderRoute: typeof ApiPublicWalletIconRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BattleRoute: BattleRoute,
+  HeroesRoute: HeroesRoute,
+  ProfileRoute: ProfileRoute,
+  TasksRoute: TasksRoute,
+  WalletRoute: WalletRoute,
+  ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
+  ApiPublicWalletIconRoute: ApiPublicWalletIconRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

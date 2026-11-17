@@ -1,0 +1,10 @@
+[
+ {"capability":"code, pages, styles, tests","source":"github elgiza2/anime-coin-quest","outcome":"copied","status":"verified","next_action":"none"},
+ {"capability":"images, videos, animated emoji","source":"source project media","outcome":"re-uploaded to this project","status":"verified","next_action":"none"},
+ {"capability":"schema and records","source":"user's own Supabase (wall_ tables, shared with other bots)","outcome":"kept: this project is connected to the same database the source used","status":"verified","next_action":"none"},
+ {"capability":"player identity","source":"Telegram Mini App initData (no Supabase Auth)","outcome":"kept","status":"pending","next_action":"add TELEGRAM_BOT_TOKEN and SUPABASE_SERVICE_ROLE_KEY, then open from Telegram"},
+ {"capability":"TON Connect + on-chain payment verification","source":"toncenter, treasury address in shop-model","outcome":"kept","status":"pending","next_action":"verify inside Telegram with a funded wallet"},
+ {"capability":"Monetag rewarded ads","source":"zone 12281067","outcome":"kept","status":"pending","next_action":"verify inside Telegram"},
+ {"capability":"public endpoints","source":"/api/public/tonconnect-manifest, /api/public/wallet-icon","outcome":"kept","status":"verified","next_action":"none"},
+ {"capability":"cutover","source":"Telegram bot Mini App URL","outcome":"pending","status":"pending","next_action":"point the bot's Mini App URL to this project's published address if switching"}
+]
