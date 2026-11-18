@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return new Response("Unauthorized", { status: 401 });
         }
         const update = (await request.json().catch(() => null)) as {
-          message?: { chat?: { id?: number }; text?: string; from?: { first_name?: string; language_code?: string } };
+          message?: { chat?: { id?: number; type?: string }; text?: string; write_access_allowed?: object; from?: { id?: number; first_name?: string; language_code?: string } };
         } | null;
         const cb = (update as { callback_query?: { id: string; data?: string; from: { id: number; language_code?: string } } } | null)?.callback_query;
         if (cb?.data?.startsWith("gift:")) {
@@ -71,6 +71,14 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return Response.json({ ok: true });
         }
         const msg = update?.message;
+        // Only Telegram's verified private-chat event can restore notification
+        // eligibility after a player explicitly grants access or starts the bot.
+        if (msg?.chat?.type === "private" && msg.from?.id === msg.chat.id &&
+            (msg.write_access_allowed || (typeof msg.text === "string" && /^\/start(?:@\w+)?(?:\s|$)/.test(msg.text)))) {
+          const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+          const { error } = await db.from("wall_users").update({ bot_blocked: false } as never).eq("tg_id", msg.from.id);
+          if (error) return Response.json({ error: "Could not save message permission" }, { status: 500 });
+        }
         // /101: admins get a button that opens the admin panel inside Telegram. Everyone else gets no answer.
         if (msg?.chat?.id && typeof msg.text === "string" && /^\/101(@\w+)?$/.test(msg.text.trim())) {
           const from = (msg as { from?: { username?: string } }).from;

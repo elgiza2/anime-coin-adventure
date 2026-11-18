@@ -61,6 +61,19 @@ describe("Telegram launch identity", () => {
     store.mockRestore();
   });
 
+  it("captures launch identity before a remembered-page redirect and retains SDK identity", async () => {
+    const payload = "query_id=early-launch&hash=regression";
+    vi.stubGlobal("Telegram", undefined);
+    window.history.replaceState(null, "", `/#tgWebAppData=${encodeURIComponent(payload)}`);
+    const { getInitData } = await import("@/lib/telegram");
+    window.history.replaceState(null, "", "/wallet");
+    expect(getInitData()).toBe(payload);
+    vi.stubGlobal("Telegram", { WebApp: { initData: "sdk-updated-launch" } });
+    expect(getInitData()).toBe("sdk-updated-launch");
+    vi.stubGlobal("Telegram", undefined);
+    expect(getInitData()).toBe("sdk-updated-launch");
+  });
+
   it("prefers SDK identity and never invents identity for ordinary browser guests", async () => {
     const { getInitData } = await import("@/lib/telegram");
     vi.stubGlobal("Telegram", undefined);

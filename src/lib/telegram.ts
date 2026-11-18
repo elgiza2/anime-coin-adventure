@@ -22,7 +22,7 @@ let launchData = "";
 export function getInitData(): string {
   if (typeof window === "undefined") return "";
   const sdkData = webApp()?.initData;
-  if (sdkData) return sdkData;
+  if (sdkData) { launchData = sdkData; return sdkData; }
   // Telegram supplies the same signed payload in the launch fragment. Keep it
   // in memory only, before navigation can remove the fragment. The server
   // still verifies its signature; this is not an authentication bypass.
@@ -31,6 +31,9 @@ export function getInitData(): string {
   if (raw) launchData = raw;
   return launchData;
 }
+
+// Capture launch parameters before a remembered-page redirect can remove them.
+if (typeof window !== "undefined") getInitData();
 
 /** React to a delayed SDK instead of permanently snapshotting an empty session. */
 export function useTelegramInitData(): string {
