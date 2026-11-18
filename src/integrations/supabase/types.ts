@@ -3936,6 +3936,42 @@ export type Database = {
         }
         Relationships: []
       }
+      orange_wallet_confirmations: {
+        Row: {
+          address: string
+          confirmed_at: string
+          payment_id: string
+          user_id: number
+        }
+        Insert: {
+          address: string
+          confirmed_at?: string
+          payment_id: string
+          user_id: number
+        }
+        Update: {
+          address?: string
+          confirmed_at?: string
+          payment_id?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orange_wallet_confirmations_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "orange_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orange_wallet_confirmations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "orange_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
       orange_withdrawals: {
         Row: {
           address: string
@@ -5089,6 +5125,309 @@ export type Database = {
           },
         ]
       }
+      zro_admins: {
+        Row: {
+          created_at: string
+          role: string
+          tg_id: number
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          role?: string
+          tg_id: number
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          role?: string
+          tg_id?: number
+          username?: string | null
+        }
+        Relationships: []
+      }
+      zro_draw_entries: {
+        Row: {
+          created_at: string
+          draw_day: string
+          id: string
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          draw_day?: string
+          id?: string
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          draw_day?: string
+          id?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zro_draw_entries_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "zro_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      zro_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          kind: string
+          memo: string
+          ref: string | null
+          tg_id: number
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          kind: string
+          memo: string
+          ref?: string | null
+          tg_id: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          kind?: string
+          memo?: string
+          ref?: string | null
+          tg_id?: number
+        }
+        Relationships: []
+      }
+      zro_season_claims: {
+        Row: {
+          created_at: string
+          tg_id: number
+          tier: number
+          track: string
+        }
+        Insert: {
+          created_at?: string
+          tg_id: number
+          tier: number
+          track: string
+        }
+        Update: {
+          created_at?: string
+          tg_id?: number
+          tier?: number
+          track?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zro_season_claims_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "zro_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      zro_task_claims: {
+        Row: {
+          created_at: string
+          task_id: string
+          tg_id: number
+        }
+        Insert: {
+          created_at?: string
+          task_id: string
+          tg_id: number
+        }
+        Update: {
+          created_at?: string
+          task_id?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zro_task_claims_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "zro_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zro_task_claims_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "zro_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
+      zro_tasks: {
+        Row: {
+          active: boolean
+          chat_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          owner_tg: number | null
+          pay_memo: string | null
+          reward_energy: number
+          sort: number
+          title: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          chat_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          owner_tg?: number | null
+          pay_memo?: string | null
+          reward_energy?: number
+          sort?: number
+          title: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          chat_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          owner_tg?: number | null
+          pay_memo?: string | null
+          reward_energy?: number
+          sort?: number
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      zro_users: {
+        Row: {
+          ads_watched: number
+          created_at: string
+          energy: number
+          first_name: string | null
+          game_day: string | null
+          game_id: string | null
+          game_minutes_today: number
+          game_started_at: string | null
+          gram: number
+          last_ad_at: string | null
+          last_daily: string | null
+          last_share: string | null
+          photo_url: string | null
+          position: number
+          premium: boolean
+          ref_by: number | null
+          regen_from: string
+          spins: number
+          tg_id: number
+          updated_at: string
+          username: string | null
+          verified: boolean
+          wallet_address: string | null
+          xp: number
+          zro: number
+        }
+        Insert: {
+          ads_watched?: number
+          created_at?: string
+          energy?: number
+          first_name?: string | null
+          game_day?: string | null
+          game_id?: string | null
+          game_minutes_today?: number
+          game_started_at?: string | null
+          gram?: number
+          last_ad_at?: string | null
+          last_daily?: string | null
+          last_share?: string | null
+          photo_url?: string | null
+          position?: number
+          premium?: boolean
+          ref_by?: number | null
+          regen_from?: string
+          spins?: number
+          tg_id: number
+          updated_at?: string
+          username?: string | null
+          verified?: boolean
+          wallet_address?: string | null
+          xp?: number
+          zro?: number
+        }
+        Update: {
+          ads_watched?: number
+          created_at?: string
+          energy?: number
+          first_name?: string | null
+          game_day?: string | null
+          game_id?: string | null
+          game_minutes_today?: number
+          game_started_at?: string | null
+          gram?: number
+          last_ad_at?: string | null
+          last_daily?: string | null
+          last_share?: string | null
+          photo_url?: string | null
+          position?: number
+          premium?: boolean
+          ref_by?: number | null
+          regen_from?: string
+          spins?: number
+          tg_id?: number
+          updated_at?: string
+          username?: string | null
+          verified?: boolean
+          wallet_address?: string | null
+          xp?: number
+          zro?: number
+        }
+        Relationships: []
+      }
+      zro_withdrawals: {
+        Row: {
+          address: string
+          amount: number
+          coin: string
+          created_at: string
+          id: string
+          status: string
+          tg_id: number
+        }
+        Insert: {
+          address: string
+          amount: number
+          coin: string
+          created_at?: string
+          id?: string
+          status?: string
+          tg_id: number
+        }
+        Update: {
+          address?: string
+          amount?: number
+          coin?: string
+          created_at?: string
+          id?: string
+          status?: string
+          tg_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zro_withdrawals_tg_id_fkey"
+            columns: ["tg_id"]
+            isOneToOne: false
+            referencedRelation: "zro_users"
+            referencedColumns: ["tg_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -5403,6 +5742,28 @@ export type Database = {
         Args: { _ad_id: number; _purpose: string; _uid: number }
         Returns: boolean
       }
+      orange_wallet_fee_nano: { Args: never; Returns: number }
+      orange_wallet_payment: {
+        Args: { _address: string; _uid: number }
+        Returns: {
+          amount_nano: number
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          kind: string
+          memo: string
+          ref_id: string | null
+          status: string
+          tx_hash: string | null
+          user_id: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orange_payments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       orange_withdraw: {
         Args: { _address: string; _amount: number; _uid: number }
         Returns: string
@@ -5527,6 +5888,10 @@ export type Database = {
           _username: string
         }
         Returns: undefined
+      }
+      zro_invite_reward: {
+        Args: { _amount: number; _tg: number }
+        Returns: number
       }
     }
     Enums: {
