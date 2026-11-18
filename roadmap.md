@@ -46,8 +46,11 @@
 - [x] Channel post day 1 published; days 2–30 auto-post daily from 14:00 UTC
 - [x] Coin shop price = 30% below market
 - [x] Translate remaining untranslated text (story + all pages)
-- [ ] Full translation review: every screen, story, riddles, bot (all 15 languages)
-- [ ] Confirm language auto-follows the player's Telegram language
+- [x] Translation coverage checked in all 15 locales: static screens, story dialogue, riddle translations and bot message variables (129 tests pass)
+- [x] Automatic language selection: all Telegram language codes tested; device-language fallback verified in browser without a saved preference
+- [ ] Verify translated live player data and bot delivery inside Telegram — requires a real Telegram Mini App launch; public/browser checks do not cover this
+- [x] Publish day 2 community post on explicit request (2026-11-18)
+- [x] Resume translation review after day 2 publication: 135 page/language checks, 60 welcome slides and 45 game tabs; no untranslated Arabic in non-Persian screens
 - [x] Start (welcome) pages translated (checked en/ru/ja/fa)
 - [x] Admin panel: /101 in the bot now replies with an Open admin panel button (admins only)
 - [x] Tasks: join community, join group, unlimited ads

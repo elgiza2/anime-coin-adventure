@@ -63,7 +63,7 @@ function translateCore(s: string, dict: Record<string, string>): string | null {
   if (t) return t;
   // Hero ranks like "كايل IV": translate the name, keep the numeral.
   const roman = s.match(/^(.*?)(\s+[IVXLC]+)$/);
-  if (roman) { const r = translateCore(roman[1]!, dict); if (r) return r + roman[2]; }
+  if (roman?.[1]) { const r = translateCore(roman[1], dict); if (r) return r + (roman[2] ?? ""); }
   // Titles joined by separators: translate each part.
   for (const sep of [" — ", " · ", ": ", " - ", "، "]) {
     if (s.includes(sep)) {
@@ -78,7 +78,7 @@ export function translateText(s: string, dict: Record<string, string>): string |
   if (!/[\u0600-\u06FF]/.test(s)) return null;
   const body = translateCore(s.trim(), dict);
   if (body == null) return null;
-  const lead = s.match(/^\s*/)![0], trail = s.match(/\s*$/)![0];
+  const lead = s.match(/^\s*/)?.[0] ?? "", trail = s.match(/\s*$/)?.[0] ?? "";
   return lead + body + trail;
 }
 
