@@ -14,7 +14,7 @@ import { heroCost, heroRate, isUnlocked, MAX_LEVEL, pendingCoins, STORAGE_HOURS,
 import { showRewardedAd } from "@/lib/monetag";
 import { adReward, shopErrorMessage } from "@/lib/shop-model";
 import { claimAdReward } from "@/lib/shop.functions";
-import { getInitData, haptic } from "@/lib/telegram";
+import { useTelegramInitData, haptic } from "@/lib/telegram";
 import { cn } from "@/lib/utils";
 import { HeroMedia } from "./HeroMedia";
 import { HEROES, TIER_SIZE, tierName, tierOf } from "./heroes-data";
@@ -27,11 +27,10 @@ const TIERS = Array.from({ length: MAX_LEVEL / TIER_SIZE }, (_, t) => t);
 export function HeroesPage() {
   const qc = useQueryClient();
   const now = useNow(1000);
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [shopOpen, setShopOpen] = useState(false);
   const [pick, setPick] = useState<LevelPick>(null);
   const [view, setView] = useState<number | null>(null);
-  useEffect(() => setInitData(getInitData()), []);
 
   const fetchBoard = useServerFn(getHeroBoard);
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => fetchBoard({ data: { initData } }), enabled: !!initData });

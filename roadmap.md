@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Fix empty identity snapshots on delayed Telegram SDK launches across player pages and admin; browser regression verified, signatures still checked by server.
+- [x] Ask for Telegram write-access permission once on direct Mini App launches; skip existing permission and respect denial (SDK simulation verified).
+- [ ] Verify affected user's rewards and native permission dialog inside Telegram — requires that user's real Mini App launch; simulated launches cannot confirm this.
+
 - [x] Telegram bot key added
 - [x] Mine Pass as a collectible art card with each player's unique number
 - [x] Battle page: remove hero strip and watch-ad button; pass card text laid out cleanly underneath

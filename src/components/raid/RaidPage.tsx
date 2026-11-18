@@ -12,7 +12,7 @@ import { getRaidState, spinRaid } from "@/lib/raid.functions";
 import { MAX_FREE_SPINS, SPIN_PACKS, VAULT_KEYS, WHEEL, type SpinResult } from "@/lib/raid-model";
 import { checkTonPayment, createTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
-import { getInitData, haptic } from "@/lib/telegram";
+import { useTelegramInitData, haptic } from "@/lib/telegram";
 import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import { StarField } from "@/components/nft/NftIntro";
@@ -30,13 +30,12 @@ function resultText(r: SpinResult): string {
 }
 
 export function RaidPage() {
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<SpinResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<"novel" | "riddle" | "raid">("novel");
-  useEffect(() => setInitData(getInitData()), []);
 
   const stateFn = useServerFn(getRaidState);
   const spinFn = useServerFn(spinRaid);

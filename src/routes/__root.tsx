@@ -13,6 +13,7 @@ import { preloadVideos } from "@/lib/video-preload";
 import { Toaster } from "@/components/ui/sonner";
 import { DomTranslator } from "@/i18n/DomTranslator";
 import { rememberPage } from "@/lib/last-page";
+import { requestBotWriteAccess, useTelegramInitData } from "@/lib/telegram";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -135,12 +136,14 @@ type TgFull = {
   ready?: () => void; expand?: () => void; requestFullscreen?: () => void; disableVerticalSwipes?: () => void;
   safeAreaInset?: { top?: number }; contentSafeAreaInset?: { top?: number };
   onEvent?: (e: string, cb: () => void) => void;
+  offEvent?: (e: string, cb: () => void) => void;
   BackButton?: { show: () => void; hide: () => void; onClick: (cb: () => void) => void; offClick: (cb: () => void) => void };
 };
 // Main tabs hide Telegram's back button; every other page shows it.
 const TAB_PAGES = ["/", "/tasks", "/battle", "/heroes", "/raid", "/wallet", "/profile"];
 
 function RootComponent() {
+  const initData = useTelegramInitData();
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => { preloadVideos(); }, []);
@@ -150,33 +153,48 @@ function RootComponent() {
   }, [router]);
   useEffect(() => {
     // Telegram's native back button: goes to the previous page, or to the battle tab if there is none.
-    const bb = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp?.BackButton;
-    if (!bb) return;
-    const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/battle" }); };
-    const sync = (path: string) => (TAB_PAGES.includes(path) ? bb.hide() : bb.show());
-    bb.onClick(back);
-    sync(router.state.location.pathname);
-    const off = router.subscribe("onResolved", (e) => sync(e.toLocation.pathname));
-    return () => { off(); bb.offClick(back); };
+    let dispose: (() => void) | undefined;
+    const setup = () => {
+      const bb = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp?.BackButton;
+      if (!bb || dispose) return;
+      const back = () => { if (window.history.length > 1) router.history.back(); else router.navigate({ to: "/battle" }); };
+      const sync = (path: string) => (TAB_PAGES.includes(path) ? bb.hide() : bb.show());
+      bb.onClick(back);
+      sync(router.state.location.pathname);
+      const off = router.subscribe("onResolved", (e) => sync(e.toLocation.pathname));
+      dispose = () => { off(); bb.offClick(back); };
+    };
+    setup();
+    const timer = window.setInterval(setup, 250);
+    const stop = window.setTimeout(() => window.clearInterval(timer), 30_000);
+    return () => { window.clearInterval(timer); window.clearTimeout(stop); dispose?.(); };
   }, [router]);
   useEffect(() => {
     // Open as a full-screen Telegram app and keep content below Telegram's own buttons.
-    const tg = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp;
-    if (!tg) return;
-    tg.ready?.();
-    tg.expand?.();
-    try { tg.requestFullscreen?.(); } catch { /* older clients */ }
-    tg.disableVerticalSwipes?.();
-    const apply = () => {
-      const a = tg.safeAreaInset?.top ?? 0;
-      const b = tg.contentSafeAreaInset?.top ?? 0;
-      document.documentElement.style.setProperty("--tg-safe-top", `${a + b}px`);
+    let dispose: (() => void) | undefined;
+    const setup = () => {
+      const tg = (window as unknown as { Telegram?: { WebApp?: TgFull } }).Telegram?.WebApp;
+      if (!tg || dispose) return;
+      tg.ready?.();
+      tg.expand?.();
+      try { tg.requestFullscreen?.(); } catch { /* older clients */ }
+      tg.disableVerticalSwipes?.();
+      requestBotWriteAccess();
+      const apply = () => {
+        const a = tg.safeAreaInset?.top ?? 0;
+        const b = tg.contentSafeAreaInset?.top ?? 0;
+        document.documentElement.style.setProperty("--tg-safe-top", `${a + b}px`);
+      };
+      apply();
+      const events = ["safeAreaChanged", "contentSafeAreaChanged", "fullscreenChanged"];
+      events.forEach((e) => tg.onEvent?.(e, apply));
+      dispose = () => events.forEach((e) => tg.offEvent?.(e, apply));
     };
-    apply();
-    tg.onEvent?.("safeAreaChanged", apply);
-    tg.onEvent?.("contentSafeAreaChanged", apply);
-    tg.onEvent?.("fullscreenChanged", apply);
-  }, []);
+    setup();
+    const timer = window.setInterval(setup, 250);
+    const stop = window.setTimeout(() => window.clearInterval(timer), 30_000);
+    return () => { window.clearInterval(timer); window.clearTimeout(stop); dispose?.(); };
+  }, [initData]);
 
   return (
     <QueryClientProvider client={queryClient}>

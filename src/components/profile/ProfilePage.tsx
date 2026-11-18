@@ -14,19 +14,18 @@ import { COIN, formatAmount, referralLink } from "@/lib/coin";
 import { getHeroBoard } from "@/lib/heroes.functions";
 import { totalRate, TOTAL_MAX } from "@/lib/heroes-model";
 import { getMyProfile } from "@/lib/profile.functions";
-import { getInitData, shareLink } from "@/lib/telegram";
+import { useTelegramInitData, shareLink } from "@/lib/telegram";
 import { MinePassCard, VerifiedBadge } from "./MinePassCard";
 
 export function ProfilePage() {
   const [lang, setLangState] = useState<Lang>("ar");
   useEffect(() => setLangState(detectLang()), []);
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [tab, setTab] = useState<"team" | "leaders">("team");
   const [page, setPage] = useState(0);
   const [infoOpen, setInfoOpen] = useState(false);
   const profileFn = useServerFn(getMyProfile);
   const heroFn = useServerFn(getHeroBoard);
-  useEffect(() => setInitData(getInitData()), []);
   const account = useQuery({ queryKey: ["wall-profile", initData, page], queryFn: () => profileFn({ data: { initData, page } }), enabled: !!initData });
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => heroFn({ data: { initData } }), enabled: !!initData });
   const p = account.data?.profile;

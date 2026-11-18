@@ -11,14 +11,14 @@ import { COIN, formatAmount } from "@/lib/coin";
 import { getHeroBoard } from "@/lib/heroes.functions";
 import { pendingCoins, totalRate, TOTAL_MAX } from "@/lib/heroes-model";
 import { getMyBoard, saveWallet } from "@/lib/tasks.functions";
-import { getInitData } from "@/lib/telegram";
+import { useTelegramInitData } from "@/lib/telegram";
 import { getTonConnect, shortTonAddress } from "@/lib/ton-connect";
 import vaultImage from "@/assets/onboarding/v3-2-mine.jpg";
 import { AnimeCard } from "./AnimeCard";
 import { MinePassCard } from "@/components/profile/MinePassCard";
 
 export function WalletPage() {
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [address, setAddress] = useState<string | null>(null);
   const [shortAddress, setShortAddress] = useState("");
   const [connecting, setConnecting] = useState(false);
@@ -28,7 +28,6 @@ export function WalletPage() {
   const heroFn = useServerFn(getHeroBoard);
   const playerFn = useServerFn(getMyBoard);
   const saveFn = useServerFn(saveWallet);
-  useEffect(() => setInitData(getInitData()), []);
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => heroFn({ data: { initData } }), enabled: !!initData });
   const player = useQuery({ queryKey: ["wall-board", initData], queryFn: () => playerFn({ data: { initData } }), enabled: !!initData });
   const refresh = () => {

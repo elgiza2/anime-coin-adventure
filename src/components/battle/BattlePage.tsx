@@ -13,7 +13,7 @@ import { HEROES } from "@/components/heroes/heroes-data";
 import { COIN, formatAmount } from "@/lib/coin";
 import { collectMining, getHeroBoard } from "@/lib/heroes.functions";
 import { coinsPerTitan, isUnlocked, pendingCoins, STORAGE_HOURS, titansSlain, totalRate, upgradeErrorMessage } from "@/lib/heroes-model";
-import { getInitData, haptic } from "@/lib/telegram";
+import { useTelegramInitData, haptic } from "@/lib/telegram";
 import { SegmentVideo } from "./SegmentVideo";
 import { MinePassCard } from "@/components/profile/MinePassCard";
 
@@ -25,9 +25,8 @@ const fmtLeft = (ms: number) => {
 export function BattlePage() {
   const qc = useQueryClient();
   const now = useNow(1000);
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [pops, setPops] = useState<number[]>([]);
-  useEffect(() => setInitData(getInitData()), []);
 
   const fetchBoard = useServerFn(getHeroBoard);
   const board = useQuery({ queryKey: ["wall-heroes", initData], queryFn: () => fetchBoard({ data: { initData } }), enabled: !!initData });

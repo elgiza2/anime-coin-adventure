@@ -8,7 +8,7 @@ import hallImage from "@/assets/tasks/garrison-hall.jpg";
 import { AnimatedEmoji } from "@/components/emoji/AnimatedEmoji";
 import type { EmojiName } from "@/components/emoji/emoji-registry";
 import { COIN, formatAmount, referralLink } from "@/lib/coin";
-import { getInitData, haptic, openExternal, shareLink } from "@/lib/telegram";
+import { useTelegramInitData, haptic, openExternal, shareLink } from "@/lib/telegram";
 import { showRewardedAd } from "@/lib/monetag";
 import { claimAdReward } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
@@ -39,14 +39,13 @@ export function TasksPage({ category }: { category: CategoryFilter }) {
   const navigate = useNavigate({ from: "/tasks" });
   const qc = useQueryClient();
   const now = useNow(1000);
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [busyTask, setBusyTask] = useState<string | null>(null);
 
   useEffect(() => {
     const tg = (window as unknown as { Telegram?: { WebApp?: { ready?: () => void; expand?: () => void } } }).Telegram?.WebApp;
     tg?.ready?.();
     tg?.expand?.();
-    setInitData(getInitData());
   }, []);
 
   const { data: tasks } = useSuspenseQuery(tasksQuery);

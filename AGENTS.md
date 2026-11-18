@@ -31,6 +31,8 @@ use the editor.
 
 ## Project rules
 
+- Player screens read launch identity through useTelegramInitData; signed fragment fallback stays in memory and is always verified server-side. Why: delayed SDK loading must not permanently turn Telegram players into guests.
+
 - App is Arabic RTL (`dir="rtl"` on `<html>`); use logical directions (origin-right for RTL progress, ChevronLeft = forward). Why: every screen reads right-to-left.
 - Start page is a story onboarding in `src/components/onboarding/` with slide content in `story-slides.ts`; visual tokens (glass, story-fade, btn-cta, story animations) live in `src/styles.css`. Why: slides and copy change often without touching layout.
 - Wallet connection uses TON Connect via the lazy browser-only singleton in `src/lib/ton-connect.ts`; its manifest and icon are served from `/api/public/*` (never `public/`), and login-protected preview hosts are mapped to the public dev host. Why: wallets fetch the manifest from their own servers, so it must be reachable without a login.

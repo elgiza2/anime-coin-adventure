@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { getInitData } from "@/lib/telegram";
+import { getInitData, useTelegramInitData } from "@/lib/telegram";
 import {
   adminDeleteTask, adminListTasks, adminMe, adminSaveTask, adminSetHelper, adminStats, type AdminRole,
 } from "@/lib/admin.functions";
@@ -11,13 +11,16 @@ type Stats = Awaited<ReturnType<typeof adminStats>>;
 const EMPTY = { title: "", url: "", chat_id: "", category: "partners", kind: "link", reward: 5, emoji: "sparkle", sort: 0, active: true };
 
 export function AdminPage() {
+  const initData = useTelegramInitData();
   const [role, setRole] = useState<AdminRole | null | undefined>(undefined);
   const me = useServerFn(adminMe);
   useEffect(() => {
-    const initData = getInitData();
     if (!initData) { setRole(null); return; }
-    me({ data: { initData } }).then((r) => setRole(r.role)).catch(() => setRole(null));
-  }, [me]);
+    let live = true;
+    setRole(undefined);
+    me({ data: { initData } }).then((r) => { if (live) setRole(r.role); }).catch(() => { if (live) setRole(null); });
+    return () => { live = false; };
+  }, [me, initData]);
 
   if (role === undefined) return <Shell><p className="text-muted-foreground">جاري التحقق…</p></Shell>;
   if (!role) return <Shell><p className="text-muted-foreground">الصفحة دي للمشرفين بس. افتحها من التطبيق في تيليجرام.</p></Shell>;

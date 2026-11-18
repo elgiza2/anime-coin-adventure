@@ -11,7 +11,7 @@ import { getMyNfts, getNftStock } from "@/lib/nft.functions";
 import { formatPassNumber } from "@/lib/mine-pass-model";
 import { checkTonPayment, createTonPayment } from "@/lib/shop.functions";
 import { shopErrorMessage } from "@/lib/shop-model";
-import { getInitData, haptic } from "@/lib/telegram";
+import { useTelegramInitData, haptic } from "@/lib/telegram";
 import { getTonConnect } from "@/lib/ton-connect";
 import { cn } from "@/lib/utils";
 import { NFT_ART, RARITY_TEXT } from "./nft-art";
@@ -49,12 +49,11 @@ function MysteryCard() {
 
 export function NftPage() {
   const qc = useQueryClient();
-  const [initData, setInitData] = useState("");
+  const initData = useTelegramInitData();
   const [intro, setIntro] = useState(true);
   const [busy, setBusy] = useState(false);
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<MintedNft | null>(null);
-  useEffect(() => setInitData(getInitData()), []);
 
   const fetchFn = useServerFn(getMyNfts);
   const createFn = useServerFn(createTonPayment);
