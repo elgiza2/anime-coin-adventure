@@ -4984,6 +4984,7 @@ export type Database = {
           mined_at: string
           notified_slot: string | null
           photo_url: string | null
+          ref_rewarded_at: string | null
           referrer_id: number | null
           tg_id: number
           total_level: number
@@ -5002,6 +5003,7 @@ export type Database = {
           mined_at?: string
           notified_slot?: string | null
           photo_url?: string | null
+          ref_rewarded_at?: string | null
           referrer_id?: number | null
           tg_id: number
           total_level?: number
@@ -5020,6 +5022,7 @@ export type Database = {
           mined_at?: string
           notified_slot?: string | null
           photo_url?: string | null
+          ref_rewarded_at?: string | null
           referrer_id?: number | null
           tg_id?: number
           total_level?: number
