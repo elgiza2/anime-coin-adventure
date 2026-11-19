@@ -76,7 +76,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         if (msg?.chat?.type === "private" && msg.from?.id === msg.chat.id &&
             (msg.write_access_allowed || (typeof msg.text === "string" && /^\/start(?:@\w+)?(?:\s|$)/.test(msg.text)))) {
           const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
-          const { error } = await db.from("wall_users").update({ bot_blocked: false } as never).eq("tg_id", msg.from.id);
+          const { error } = await db.from("wall_users").update({ bot_blocked: false } as never).eq("tg_id", msg.from?.id ?? 0);
           if (error) return Response.json({ error: "Could not save message permission" }, { status: 500 });
         }
         // /101: admins get a button that opens the admin panel inside Telegram. Everyone else gets no answer.
