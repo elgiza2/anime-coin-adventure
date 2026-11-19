@@ -58,3 +58,4 @@
 - [x] Start (welcome) pages translated (checked en/ru/ja/fa)
 - [x] Admin panel: /101 in the bot now replies with an Open admin panel button (admins only)
 - [x] Tasks: join community, join group, unlimited ads
+- [ ] Publish day-3 channel post
