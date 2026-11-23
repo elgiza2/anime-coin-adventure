@@ -1914,6 +1914,496 @@ export type Database = {
           },
         ]
       }
+      grm_broadcasts: {
+        Row: {
+          button_text: string | null
+          created_at: string
+          cursor: number
+          done: boolean
+          failed: number
+          gift_id: string | null
+          id: string
+          locked_until: string | null
+          photo: string | null
+          sent: number
+          slot_key: string | null
+          text: string
+        }
+        Insert: {
+          button_text?: string | null
+          created_at?: string
+          cursor?: number
+          done?: boolean
+          failed?: number
+          gift_id?: string | null
+          id?: string
+          locked_until?: string | null
+          photo?: string | null
+          sent?: number
+          slot_key?: string | null
+          text: string
+        }
+        Update: {
+          button_text?: string | null
+          created_at?: string
+          cursor?: number
+          done?: boolean
+          failed?: number
+          gift_id?: string | null
+          id?: string
+          locked_until?: string | null
+          photo?: string | null
+          sent?: number
+          slot_key?: string | null
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grm_broadcasts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "grm_gift_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grm_gift_campaigns: {
+        Row: {
+          amount: number
+          claims: number
+          created_at: string
+          expires_at: string
+          id: string
+          key: string | null
+        }
+        Insert: {
+          amount: number
+          claims?: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          key?: string | null
+        }
+        Update: {
+          amount?: number
+          claims?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          key?: string | null
+        }
+        Relationships: []
+      }
+      grm_gift_claims: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          user_id: number
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          user_id: number
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grm_gift_claims_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "grm_gift_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grm_jobs: {
+        Row: {
+          key: string
+          last_run_at: string | null
+          locked_until: string | null
+        }
+        Insert: {
+          key: string
+          last_run_at?: string | null
+          locked_until?: string | null
+        }
+        Update: {
+          key?: string
+          last_run_at?: string | null
+          locked_until?: string | null
+        }
+        Relationships: []
+      }
+      grm_payments: {
+        Row: {
+          amount_nano: number
+          comment: string
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          purpose: string
+          sender: string | null
+          server_id: number | null
+          status: string
+          tx_hash: string | null
+          user_id: number
+        }
+        Insert: {
+          amount_nano: number
+          comment: string
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          purpose: string
+          sender?: string | null
+          server_id?: number | null
+          status?: string
+          tx_hash?: string | null
+          user_id: number
+        }
+        Update: {
+          amount_nano?: number
+          comment?: string
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          purpose?: string
+          sender?: string | null
+          server_id?: number | null
+          status?: string
+          tx_hash?: string | null
+          user_id?: number
+        }
+        Relationships: []
+      }
+      grm_servers: {
+        Row: {
+          active: boolean
+          daily_rate: number
+          duration_days: number
+          hue: number
+          id: number
+          image: number
+          max_per_user: number
+          name: string
+          price: number
+          tier: number
+          unlock: string
+          unlock_target: number
+        }
+        Insert: {
+          active?: boolean
+          daily_rate: number
+          duration_days?: number
+          hue?: number
+          id: number
+          image?: number
+          max_per_user?: number
+          name: string
+          price?: number
+          tier?: number
+          unlock?: string
+          unlock_target?: number
+        }
+        Update: {
+          active?: boolean
+          daily_rate?: number
+          duration_days?: number
+          hue?: number
+          id?: number
+          image?: number
+          max_per_user?: number
+          name?: string
+          price?: number
+          tier?: number
+          unlock?: string
+          unlock_target?: number
+        }
+        Relationships: []
+      }
+      grm_staff: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          role: string
+          username: string
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          role?: string
+          username: string
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          role?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      grm_task_done: {
+        Row: {
+          created_at: string
+          task_id: string
+          user_id: number
+        }
+        Insert: {
+          created_at?: string
+          task_id: string
+          user_id: number
+        }
+        Update: {
+          created_at?: string
+          task_id?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grm_task_done_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "grm_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grm_task_starts: {
+        Row: {
+          started_at: string
+          task_id: string
+          user_id: number
+        }
+        Insert: {
+          started_at?: string
+          task_id: string
+          user_id: number
+        }
+        Update: {
+          started_at?: string
+          task_id?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grm_task_starts_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "grm_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grm_tasks: {
+        Row: {
+          active: boolean
+          channel: string | null
+          created_at: string
+          created_by: number | null
+          description: string
+          id: string
+          kind: string
+          reward: number
+          sort: number
+          target: number
+          title: string
+          url: string | null
+        }
+        Insert: {
+          active?: boolean
+          channel?: string | null
+          created_at?: string
+          created_by?: number | null
+          description?: string
+          id?: string
+          kind: string
+          reward: number
+          sort?: number
+          target?: number
+          title: string
+          url?: string | null
+        }
+        Update: {
+          active?: boolean
+          channel?: string | null
+          created_at?: string
+          created_by?: number | null
+          description?: string
+          id?: string
+          kind?: string
+          reward?: number
+          sort?: number
+          target?: number
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      grm_user_servers: {
+        Row: {
+          daily_rate: number
+          expires_at: string
+          id: string
+          server_id: number
+          source: string
+          started_at: string
+          user_id: number
+        }
+        Insert: {
+          daily_rate: number
+          expires_at: string
+          id?: string
+          server_id: number
+          source?: string
+          started_at?: string
+          user_id: number
+        }
+        Update: {
+          daily_rate?: number
+          expires_at?: string
+          id?: string
+          server_id?: number
+          source?: string
+          started_at?: string
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grm_user_servers_server_id_fkey"
+            columns: ["server_id"]
+            isOneToOne: false
+            referencedRelation: "grm_servers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grm_users: {
+        Row: {
+          ads_day: string | null
+          ads_today: number
+          ads_total: number
+          balance: number
+          bot_blocked: boolean
+          bot_started: boolean
+          created_at: string
+          first_name: string
+          lang: string | null
+          last_ad_at: string | null
+          last_claim_at: string
+          last_seen_at: string
+          photo_url: string | null
+          ref_earnings: number
+          referrals_count: number
+          referrals_joined: number
+          referrer_id: number | null
+          tg_id: number
+          total_deposited: number
+          total_mined: number
+          total_withdrawn: number
+          unlocked: boolean
+          unlocked_at: string | null
+          username: string | null
+          wallet_address: string | null
+        }
+        Insert: {
+          ads_day?: string | null
+          ads_today?: number
+          ads_total?: number
+          balance?: number
+          bot_blocked?: boolean
+          bot_started?: boolean
+          created_at?: string
+          first_name?: string
+          lang?: string | null
+          last_ad_at?: string | null
+          last_claim_at?: string
+          last_seen_at?: string
+          photo_url?: string | null
+          ref_earnings?: number
+          referrals_count?: number
+          referrals_joined?: number
+          referrer_id?: number | null
+          tg_id: number
+          total_deposited?: number
+          total_mined?: number
+          total_withdrawn?: number
+          unlocked?: boolean
+          unlocked_at?: string | null
+          username?: string | null
+          wallet_address?: string | null
+        }
+        Update: {
+          ads_day?: string | null
+          ads_today?: number
+          ads_total?: number
+          balance?: number
+          bot_blocked?: boolean
+          bot_started?: boolean
+          created_at?: string
+          first_name?: string
+          lang?: string | null
+          last_ad_at?: string | null
+          last_claim_at?: string
+          last_seen_at?: string
+          photo_url?: string | null
+          ref_earnings?: number
+          referrals_count?: number
+          referrals_joined?: number
+          referrer_id?: number | null
+          tg_id?: number
+          total_deposited?: number
+          total_mined?: number
+          total_withdrawn?: number
+          unlocked?: boolean
+          unlocked_at?: string | null
+          username?: string | null
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      grm_withdrawals: {
+        Row: {
+          address: string
+          amount: number
+          created_at: string
+          id: string
+          note: string | null
+          processed_at: string | null
+          processed_by: number | null
+          status: string
+          tx_hash: string | null
+          user_id: number
+        }
+        Insert: {
+          address: string
+          amount: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          processed_at?: string | null
+          processed_by?: number | null
+          status?: string
+          tx_hash?: string | null
+          user_id: number
+        }
+        Update: {
+          address?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          processed_at?: string | null
+          processed_by?: number | null
+          status?: string
+          tx_hash?: string | null
+          user_id?: number
+        }
+        Relationships: []
+      }
       hm27_ad_views: {
         Row: {
           created_at: string
@@ -5612,6 +6102,86 @@ export type Database = {
         Args: { p_cap_hours: number; p_user: number }
         Returns: number
       }
+      grm_claim_free_server: {
+        Args: { p_server: number; p_user: number }
+        Returns: string
+      }
+      grm_claim_gift: {
+        Args: { p_gift: string; p_user: number }
+        Returns: number
+      }
+      grm_claim_mining: {
+        Args: { p_cap_hours: number; p_ref_pct: number; p_user: number }
+        Returns: number
+      }
+      grm_claim_payout: { Args: { p_id: string }; Returns: boolean }
+      grm_complete_task: {
+        Args: { p_task: string; p_user: number; p_verified: boolean }
+        Returns: number
+      }
+      grm_confirm_payment: {
+        Args: {
+          p_friend_bonus: number
+          p_id: string
+          p_ref_bonus: number
+          p_ref_pct: number
+          p_sender: string
+          p_tx: string
+        }
+        Returns: Json
+      }
+      grm_grant_server: {
+        Args: { p_server: number; p_source: string; p_user: number }
+        Returns: string
+      }
+      grm_lock: { Args: { p_key: string; p_seconds: number }; Returns: boolean }
+      grm_pending: {
+        Args: { p_cap_hours: number; p_user: number }
+        Returns: number
+      }
+      grm_process_withdrawal: {
+        Args: {
+          p_admin: number
+          p_id: string
+          p_note: string
+          p_paid: boolean
+          p_tx: string
+        }
+        Returns: Json
+      }
+      grm_record_ad: {
+        Args: {
+          p_daily_cap: number
+          p_min_secs: number
+          p_reward: number
+          p_user: number
+        }
+        Returns: Json
+      }
+      grm_register: {
+        Args: {
+          p_first: string
+          p_from_bot: boolean
+          p_id: number
+          p_lang: string
+          p_photo: string
+          p_ref: number
+          p_username: string
+        }
+        Returns: Json
+      }
+      grm_request_withdrawal: {
+        Args: {
+          p_address: string
+          p_ads_req: number
+          p_amount: number
+          p_min: number
+          p_refs_req: number
+          p_user: number
+        }
+        Returns: string
+      }
+      grm_stats: { Args: never; Returns: Json }
       orai_claim_gift: { Args: { _cid: string; _tid: number }; Returns: number }
       orai_claim_job: {
         Args: { _key: string; _name: string }
